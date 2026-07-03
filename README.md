@@ -27,6 +27,7 @@
 │       └── stock_data_601857.json
 └── docs/
     ├── agent.md
+    ├── strategy_engine_实现设计.md
     ├── 股票投资决策引擎（AI执行版 v2.0）.md
     ├── 股票投资分析自查手册（逻辑修订版 v2.0）.md
     ├── 股票决策数据底稿_JSON通用模板.md
@@ -87,5 +88,6 @@ data/沪深A股代码（不含创业板）.csv
 ## 主要文档
 
 - [Agent 执行说明](docs/agent.md)
+- [strategy_engine 实现设计](docs/strategy_engine_实现设计.md)
 - [股票投资决策引擎](docs/股票投资决策引擎（AI执行版%20v2.0）.md)
 - [数据字段与规则映射](docs/股票决策数据底稿_字段说明与规则映射.md)
