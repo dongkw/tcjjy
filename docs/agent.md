@@ -9,12 +9,13 @@
 
 | 文件 | 用途 |
 |------|------|
-| `股票投资决策引擎（AI执行版 v2.0）.md` | 最终买入/卖出判断规则，必须按闸门顺序执行 |
-| `股票投资分析自查手册（逻辑修订版 v2.0）.md` | 人工复核框架，用于补充交易逻辑、证伪点、仓位 |
-| `stock_decision_data.py` | 单只股票数据抓取脚本 |
-| `stock_json/stock_data_<代码>.json` | 脚本生成的单票结构化数据 |
-| `股票决策数据底稿_JSON通用模板.md` | JSON 数据底稿通用模板 |
-| `股票决策数据底稿_字段说明与规则映射.md` | JSON 字段与规则闸门的映射说明 |
+| `docs/股票投资决策引擎（AI执行版 v2.0）.md` | 最终买入/卖出判断规则，必须按闸门顺序执行 |
+| `docs/股票投资分析自查手册（逻辑修订版 v2.0）.md` | 人工复核框架，用于补充交易逻辑、证伪点、仓位 |
+| `stock_decision_data.py` | 根目录兼容入口，调用核心单票数据抓取脚本 |
+| `src/ai_trader/stock_decision_data.py` | 核心单票数据抓取脚本 |
+| `data/stock_json/stock_data_<代码>.json` | 脚本生成的单票结构化数据 |
+| `docs/股票决策数据底稿_JSON通用模板.md` | JSON 数据底稿通用模板 |
+| `docs/股票决策数据底稿_字段说明与规则映射.md` | JSON 字段与规则闸门的映射说明 |
 
 ---
 
@@ -62,7 +63,7 @@ python .\stock_decision_data.py <股票代码> --period long
 脚本会生成：
 
 ```text
-stock_json/stock_data_<股票代码>.json
+data/stock_json/stock_data_<股票代码>.json
 ```
 
 后续评估优先读取该 JSON，不重复联网查同一批基础数据。
@@ -450,11 +451,11 @@ python .\stock_decision_data.py 600398 --period middle
 读取 JSON 摘要：
 
 ```powershell
-Get-Content .\stock_json\stock_data_600398.json -Raw | ConvertFrom-Json
+Get-Content .\data\stock_json\stock_data_600398.json -Raw | ConvertFrom-Json
 ```
 
 检查脚本语法：
 
 ```powershell
-python -m py_compile .\stock_decision_data.py
+python -m py_compile .\stock_decision_data.py .\src\ai_trader\stock_decision_data.py .\scripts\fetch_stock_codes.py
 ```

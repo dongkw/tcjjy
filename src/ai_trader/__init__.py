@@ -1,0 +1,2 @@
+"""AI trader project package."""
+

@@ -11,7 +11,7 @@
 
 | 字段 | 填写内容 |
 |------|----------|
-| 原始JSON文件 | `stock_json/stock_data_<股票代码>.json` |
+| 原始JSON文件 | `data/stock_json/stock_data_<股票代码>.json` |
 | 数据生成时间 | `<meta.generated_at>` |
 | 评估周期 | `<meta.requested_period>`：short / middle / long |
 | 数据来源 | `<meta.source>` |
