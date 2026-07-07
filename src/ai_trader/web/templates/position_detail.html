@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}持仓详情 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>{{ position.name | dash }} {{ position.symbol | dash }}</h1>
+    <p>{{ position.account_id | dash }} / {{ position.asset_type | dash }} / 更新 {{ position.updated_at | datetime }}</p>
+  </div>
+  <div class="action-row">
+    <a class="button-link secondary" href="{{ url_for('positions_page') }}">返回持仓</a>
+    <a class="button-link secondary" href="{{ url_for('decisions_page') }}?symbol={{ position.symbol }}">查看决策</a>
+  </div>
+</section>
+
+<section class="metadata-grid">
+  <div><span>总数量</span><strong>{{ position.total_quantity | dash }}</strong></div>
+  <div><span>可卖数量</span><strong>{{ position.available_quantity | dash }}</strong></div>
+  <div><span>T+1 锁定</span><strong>{{ position.locked_quantity | dash }}</strong></div>
+  <div><span>成本价</span><strong>{{ position.avg_cost | money }}</strong></div>
+  <div><span>现价</span><strong>{{ position.market_price | money }}</strong></div>
+  <div><span>市值</span><strong>{{ position.market_value | money }}</strong></div>
+  <div><span>浮盈亏</span><strong>{{ position.unrealized_pnl | money }} / {{ position.unrealized_pnl_pct | pct }}</strong></div>
+  <div><span>仓位</span><strong>{{ position.position_pct | pct }}</strong></div>
+  <div><span>状态</span><strong><span class="status-pill {{ position.position_status | status_class }}">{{ position.position_status | dash }}</span></strong></div>
+</section>
+
+<section class="layout-two">
+  <div class="panel">
+    <div class="panel-header"><h2>持仓计划维护</h2></div>
+    <form class="form-grid" method="post" action="{{ url_for('action_position_update') }}">
+      <input type="hidden" name="account_id" value="{{ position.account_id }}">
+      <input type="hidden" name="symbol" value="{{ position.symbol }}">
+      <label>
+        <span>原买入逻辑</span>
+        <textarea name="buy_logic" rows="5" placeholder="为什么买入，什么逻辑成立才继续持有">{{ position.buy_logic or '' }}</textarea>
+      </label>
+      <div class="form-row">
+        <label>
+          <span>证伪点</span>
+          <input name="invalidation_point" value="{{ position.invalidation_point or '' }}" placeholder="例如 5.20">
+        </label>
+        <label>
+          <span>止损价</span>
+          <input name="stop_loss_price" value="{{ position.stop_loss_price or '' }}" placeholder="例如 5.10">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          <span>目标价</span>
+          <input name="target_price" value="{{ position.target_price or '' }}" placeholder="可选">
+        </label>
+        <label>
+          <span>计划仓位 %</span>
+          <input name="planned_position_pct" value="{{ position.planned_position_pct or '' }}" placeholder="例如 10">
+        </label>
+      </div>
+      <label>
+        <span>备注</span>
+        <textarea name="position_note" rows="4" placeholder="补充风险、观察点、后续处理计划">{{ position.position_note or '' }}</textarea>
+      </label>
+      <div class="action-row">
+        <button type="submit">保存</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><h2>最近决策</h2></div>
+    <div class="report-list">
+      {% for item in position.recent_decisions %}
+      <a class="report-link" href="{{ url_for('decision_detail_page', decision_id=item.decision_id) }}">
+        <span>{{ item.display_task | dash }} / {{ item.display_action | dash }}</span>
+        <small>{{ item.decision_time | datetime }} · {{ item.display_reason | short_text(70) }}</small>
+      </a>
+      {% else %}
+      <div class="muted">暂无该股票决策。</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>持仓关键字段</h2></div>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        <tr><th>首次买入</th><td>{{ position.first_buy_date | dash }}</td><th>最近交易</th><td>{{ position.last_trade_date | dash }}</td></tr>
+        <tr><th>证伪点</th><td>{{ position.invalidation_point | money }}</td><th>止损价</th><td>{{ position.stop_loss_price | money }}</td></tr>
+        <tr><th>目标价</th><td>{{ position.target_price | money }}</td><th>计划仓位</th><td>{{ position.planned_position_pct | pct }}</td></tr>
+        <tr><th>买入逻辑</th><td colspan="3" class="wrap-cell">{{ position.buy_logic | dash }}</td></tr>
+        <tr><th>备注</th><td colspan="3" class="wrap-cell">{{ position.position_note | dash }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>人工维护记录</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>时间</th><th>操作</th><th>修改前</th><th>修改后</th><th>原因</th></tr></thead>
+      <tbody>
+        {% for item in position.audit_logs %}
+        <tr>
+          <td>{{ item.created_at | datetime }}</td>
+          <td>{{ item.operation | dash }}</td>
+          <td class="wrap-cell">{{ item.before_value | dash }}</td>
+          <td class="wrap-cell">{{ item.after_value | dash }}</td>
+          <td>{{ item.reason | dash }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">暂无人工维护记录。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

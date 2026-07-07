@@ -498,6 +498,86 @@ symbol + trade_date
 trade_date
 ```
 
+当前 v0.1 Web 自选股模块已落地简化版 `market_quotes`：
+
+```text
+symbol              主键，股票代码
+name                股票名称
+exchange            市场
+asset_type          资产类型，当前默认 stock
+trade_date          行情交易日
+quote_time          行情或生成时间
+price               最新价
+pct_change          涨跌幅
+pe_ttm              TTM 市盈率
+pb                  市净率
+market_cap_yuan     总市值
+ma20                20 日均线
+ma60                60 日均线
+change_20d_pct      20 日涨跌幅
+source              数据来源
+source_path         来源说明
+updated_at          写入数据库时间
+payload_json        完整抓取结果，用于详情页和后续策略调试
+```
+
+说明：
+
+- 自选股页面只读写 `market_quotes`，不再从 `data/stock_json` 读取行情。
+- 详情页从 `payload_json` 展开完整数据。
+- 后续如果拆分日线、估值、财务明细表，`market_quotes` 仍保留最新行情摘要。
+
+### 7.2.1 watchlist_tabs
+
+用途：自选股分组 tab。
+
+```text
+tab_id              主键
+name                tab 显示名称
+tab_type            system 或 user
+sort_order          排序
+is_default          是否默认 tab
+is_active           是否启用
+created_at
+updated_at
+```
+
+默认 tab：
+
+```text
+positions           持仓
+all                 全部
+```
+
+### 7.2.2 watchlist_items
+
+用途：tab 内的股票清单。
+
+```text
+item_id             主键
+tab_id              所属 tab
+symbol              股票代码
+name                股票名称，可为空，优先用 market_quotes.name 展示
+asset_type          当前默认 stock
+note                人工备注
+created_at
+updated_at
+payload_json
+```
+
+唯一键：
+
+```text
+tab_id + symbol
+```
+
+说明：
+
+- 新增 tab、输入股票代码加入自选、勾选刷新行情，都操作数据库。
+- 股票名称和行情摘要来自 `market_quotes`。
+- 搜索支持 `symbol` 和 `name`。
+- Web 分页由数据库 `LIMIT/OFFSET` 完成。
+
 ### 7.3 technical_indicators
 
 用途：技术指标。

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}盘后数据 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>盘后数据</h1>
+    <p>收盘后统一拉取并落库行情，随后同步持仓和账户估值，供盘后诊股读取。</p>
+  </div>
+  <div class="action-row">
+    <a class="button-link secondary" href="{{ url_for('post_market_diagnosis_page') }}">去盘后诊股</a>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>运行盘后数据准备</h2></div>
+  <form class="post-market-form" method="post" action="{{ url_for('action_post_market_data_prep_run') }}">
+    <div class="form-field">
+      <span class="field-label">范围</span>
+      <label class="checkbox-line"><input type="checkbox" name="include_positions" value="1" checked> 包含当前持仓</label>
+    </div>
+    <div class="form-field wide">
+      <span class="field-label">选择自选股 tab</span>
+      <div class="checkbox-group">
+        {% for tab in tabs %}
+        <label class="checkbox-line"><input type="checkbox" name="tab_ids" value="{{ tab.tab_id }}" {{ 'checked' if tab.tab_id in ['all', 'decisions'] else '' }}> {{ tab.name }}</label>
+        {% else %}
+        <span class="muted">暂无自选股 tab。</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit">准备盘后数据</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h2>最近准备明细</h2>
+    {% if latest_run_id %}<span class="muted">当前批次：{{ latest_run_id }}</span>{% endif %}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>状态</th><th>代码</th><th>名称</th><th>来源</th><th>交易日</th><th>错误</th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><span class="status-pill {{ item.status | status_class }}">{{ item.status | dash }}</span></td>
+          <td>{{ item.symbol | dash }}</td>
+          <td>{{ item.name | dash }}</td>
+          <td>{{ item.source_type | dash }}</td>
+          <td>{{ item.trade_date | dash }}</td>
+          <td class="wrap-cell">{{ item.error_message | dash }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">暂无准备明细。先运行盘后数据准备。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>运行记录</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>开始时间</th><th>结束时间</th><th>交易日</th><th>状态</th><th>总数</th><th>成功</th><th>失败</th><th>同步持仓</th><th>同步账户</th><th>错误</th></tr>
+      </thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td>{{ run.started_at | datetime }}</td>
+          <td>{{ run.finished_at | datetime }}</td>
+          <td>{{ run.trade_date | dash }}</td>
+          <td><span class="status-pill {{ run.status | status_class }}">{{ run.status | dash }}</span></td>
+          <td>{{ run.total_count | dash }}</td>
+          <td>{{ run.success_count | dash }}</td>
+          <td>{{ run.failed_count | dash }}</td>
+          <td>{{ run.position_sync_count | dash }}</td>
+          <td>{{ run.account_sync_count | dash }}</td>
+          <td class="wrap-cell">{{ run.error_message | dash }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="10" class="muted">暂无运行记录。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

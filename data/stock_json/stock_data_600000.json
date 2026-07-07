@@ -1,0 +1,629 @@
+{
+  "meta": {
+    "generated_at": "2026-07-06T19:58:43",
+    "requested_period": "middle",
+    "source": "Tencent quote/kline plus Eastmoney finance/announcement/ownership APIs"
+  },
+  "quote": {
+    "code": "600000",
+    "name": "浦发银行",
+    "market": "SH",
+    "trade_date": "2026-07-06",
+    "price": 8.92,
+    "open": 8.68,
+    "high": 8.93,
+    "low": 8.62,
+    "previous_close": 8.69,
+    "change": 0.23,
+    "pct_change": 2.65,
+    "volume_lots": 793762.0,
+    "amount_yuan": 698880000.0,
+    "market_cap_yuan": 297088000000.0,
+    "pe_ttm": 5.91,
+    "pb": 0.39,
+    "dividend_yield_pct": null,
+    "roe_pct_quote": null,
+    "net_margin_pct_quote": null,
+    "trading_status": null
+  },
+  "technical": {
+    "last_date": "2026-07-06",
+    "close": 8.92,
+    "day_pct_change": 2.65,
+    "amount_yuan": 0.0,
+    "ma20": 9.11,
+    "ma60": 9.29,
+    "ma120": 9.83,
+    "ma20_slope_up": false,
+    "ma60_slope_up": false,
+    "above_ma20": false,
+    "above_ma60": false,
+    "change_5d_pct": 2.18,
+    "change_20d_pct": -4.5,
+    "change_60d_pct": -10.62,
+    "high_20d": 9.72,
+    "low_20d": 8.49,
+    "atr14_pct": 2.68,
+    "recent_10d": [
+      {
+        "date": "2026-06-23",
+        "open": 9.14,
+        "close": 9.28,
+        "high": 9.35,
+        "low": 9.13,
+        "volume": 833918.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.4,
+        "pct_change": 1.31,
+        "change": 0.12,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-06-24",
+        "open": 9.26,
+        "close": 8.9,
+        "high": 9.27,
+        "low": 8.9,
+        "volume": 1075266.0,
+        "amount": 0.0,
+        "amplitude_pct": 3.99,
+        "pct_change": -4.09,
+        "change": -0.38,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-06-25",
+        "open": 8.85,
+        "close": 8.85,
+        "high": 8.93,
+        "low": 8.82,
+        "volume": 658297.0,
+        "amount": 0.0,
+        "amplitude_pct": 1.24,
+        "pct_change": -0.56,
+        "change": -0.05,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-06-26",
+        "open": 8.86,
+        "close": 8.76,
+        "high": 8.89,
+        "low": 8.7,
+        "volume": 526078.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.15,
+        "pct_change": -1.02,
+        "change": -0.09,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-06-29",
+        "open": 8.75,
+        "close": 8.73,
+        "high": 8.78,
+        "low": 8.49,
+        "volume": 680984.0,
+        "amount": 0.0,
+        "amplitude_pct": 3.31,
+        "pct_change": -0.34,
+        "change": -0.03,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-06-30",
+        "open": 8.69,
+        "close": 8.61,
+        "high": 8.7,
+        "low": 8.49,
+        "volume": 684341.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.41,
+        "pct_change": -1.37,
+        "change": -0.12,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-01",
+        "open": 8.58,
+        "close": 8.65,
+        "high": 8.75,
+        "low": 8.54,
+        "volume": 534177.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.44,
+        "pct_change": 0.46,
+        "change": 0.04,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-02",
+        "open": 8.71,
+        "close": 8.7,
+        "high": 8.84,
+        "low": 8.56,
+        "volume": 711376.0,
+        "amount": 0.0,
+        "amplitude_pct": 3.24,
+        "pct_change": 0.58,
+        "change": 0.05,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-03",
+        "open": 8.69,
+        "close": 8.69,
+        "high": 8.82,
+        "low": 8.59,
+        "volume": 695133.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.64,
+        "pct_change": -0.11,
+        "change": -0.01,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-06",
+        "open": 8.68,
+        "close": 8.92,
+        "high": 8.93,
+        "low": 8.62,
+        "volume": 793762.0,
+        "amount": 0.0,
+        "amplitude_pct": 3.57,
+        "pct_change": 2.65,
+        "change": 0.23,
+        "turnover_pct": 0.0
+      }
+    ]
+  },
+  "financial": {
+    "latest": {
+      "report": "2026一季报",
+      "report_type": "一季报",
+      "notice_date": "2026-04-30",
+      "revenue_yuan": 46573000000.0,
+      "parent_net_profit_yuan": 17861000000.0,
+      "deducted_net_profit_yuan": 17903000000.0,
+      "operating_cashflow_yuan": 91724000000.0,
+      "ocf_to_net_profit": 5.135434746094844,
+      "eps": 0.52,
+      "deducted_eps": 0.52,
+      "roe_pct": 2.32,
+      "gross_margin_pct": null,
+      "net_margin_pct": 39.0140209993,
+      "debt_asset_ratio_pct": 91.8355530551,
+      "free_cashflow_yuan": null,
+      "revenue_yoy_pct": 1.417621183746,
+      "parent_np_yoy_pct": 1.494488010001,
+      "deducted_np_yoy_pct": 1.831522666515,
+      "total_share": 33305838300.0
+    },
+    "annual_last_3": [
+      {
+        "report": "2025年报",
+        "report_type": "年报",
+        "notice_date": "2026-03-31",
+        "revenue_yuan": 173964000000.0,
+        "parent_net_profit_yuan": 50017000000.0,
+        "deducted_net_profit_yuan": 50144000000.0,
+        "operating_cashflow_yuan": 375836000000.0,
+        "ocf_to_net_profit": 7.514165183837496,
+        "eps": 1.52,
+        "deducted_eps": 1.53,
+        "roe_pct": 6.76,
+        "gross_margin_pct": null,
+        "net_margin_pct": 28.974385505,
+        "debt_asset_ratio_pct": 91.822547404,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 1.883477405299,
+        "parent_np_yoy_pct": 10.517709967519,
+        "deducted_np_yoy_pct": 13.429999773792,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2024年报",
+        "report_type": "年报",
+        "notice_date": "2025-03-29",
+        "revenue_yuan": 170748000000.0,
+        "parent_net_profit_yuan": 45257000000.0,
+        "deducted_net_profit_yuan": 44207000000.0,
+        "operating_cashflow_yuan": -333654000000.0,
+        "ocf_to_net_profit": -7.372428574585147,
+        "eps": 1.36,
+        "deducted_eps": 1.32,
+        "roe_pct": 6.28,
+        "gross_margin_pct": null,
+        "net_margin_pct": 26.8436526343,
+        "debt_asset_ratio_pct": 92.1286150321,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": -1.548715938051,
+        "parent_np_yoy_pct": 23.309356438341,
+        "deducted_np_yoy_pct": 30.473407709108,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2023年报",
+        "report_type": "年报",
+        "notice_date": "2024-04-30",
+        "revenue_yuan": 173434000000.0,
+        "parent_net_profit_yuan": 36702000000.0,
+        "deducted_net_profit_yuan": 33882000000.0,
+        "operating_cashflow_yuan": 388397000000.0,
+        "ocf_to_net_profit": 10.582447823006921,
+        "eps": 1.07,
+        "deducted_eps": 0.97,
+        "roe_pct": 5.21,
+        "gross_margin_pct": null,
+        "net_margin_pct": 21.5811201956,
+        "debt_asset_ratio_pct": 91.8633962186,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": -8.052083001983,
+        "parent_np_yoy_pct": -28.275781204198,
+        "deducted_np_yoy_pct": -33.316276323558,
+        "total_share": 33305838300.0
+      }
+    ],
+    "recent_reports": [
+      {
+        "report": "2026一季报",
+        "report_type": "一季报",
+        "notice_date": "2026-04-30",
+        "revenue_yuan": 46573000000.0,
+        "parent_net_profit_yuan": 17861000000.0,
+        "deducted_net_profit_yuan": 17903000000.0,
+        "operating_cashflow_yuan": 91724000000.0,
+        "ocf_to_net_profit": 5.135434746094844,
+        "eps": 0.52,
+        "deducted_eps": 0.52,
+        "roe_pct": 2.32,
+        "gross_margin_pct": null,
+        "net_margin_pct": 39.0140209993,
+        "debt_asset_ratio_pct": 91.8355530551,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 1.417621183746,
+        "parent_np_yoy_pct": 1.494488010001,
+        "deducted_np_yoy_pct": 1.831522666515,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2025年报",
+        "report_type": "年报",
+        "notice_date": "2026-03-31",
+        "revenue_yuan": 173964000000.0,
+        "parent_net_profit_yuan": 50017000000.0,
+        "deducted_net_profit_yuan": 50144000000.0,
+        "operating_cashflow_yuan": 375836000000.0,
+        "ocf_to_net_profit": 7.514165183837496,
+        "eps": 1.52,
+        "deducted_eps": 1.53,
+        "roe_pct": 6.76,
+        "gross_margin_pct": null,
+        "net_margin_pct": 28.974385505,
+        "debt_asset_ratio_pct": 91.822547404,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 1.883477405299,
+        "parent_np_yoy_pct": 10.517709967519,
+        "deducted_np_yoy_pct": 13.429999773792,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2025三季报",
+        "report_type": "三季报",
+        "notice_date": "2025-10-31",
+        "revenue_yuan": 132280000000.0,
+        "parent_net_profit_yuan": 38819000000.0,
+        "deducted_net_profit_yuan": 38900000000.0,
+        "operating_cashflow_yuan": 165476000000.0,
+        "ocf_to_net_profit": 4.262757927818852,
+        "eps": 1.28,
+        "deducted_eps": 1.29,
+        "roe_pct": 5.67,
+        "gross_margin_pct": null,
+        "net_margin_pct": 29.6121862715,
+        "debt_asset_ratio_pct": 91.4999412669,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 1.880020640948,
+        "parent_np_yoy_pct": 10.209238281805,
+        "deducted_np_yoy_pct": 14.543152439563,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2025中报",
+        "report_type": "中报",
+        "notice_date": "2025-08-28",
+        "revenue_yuan": 90559000000.0,
+        "parent_net_profit_yuan": 29737000000.0,
+        "deducted_net_profit_yuan": 29984000000.0,
+        "operating_cashflow_yuan": 21257000000.0,
+        "ocf_to_net_profit": 0.7148333725661634,
+        "eps": 0.99,
+        "deducted_eps": 1.0,
+        "roe_pct": 4.33,
+        "gross_margin_pct": null,
+        "net_margin_pct": 33.0105235261,
+        "debt_asset_ratio_pct": 91.6932473449,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 2.618756232436,
+        "parent_np_yoy_pct": 10.186008596413,
+        "deducted_np_yoy_pct": 11.855554726554,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2025一季报",
+        "report_type": "一季报",
+        "notice_date": "2025-04-30",
+        "revenue_yuan": 45922000000.0,
+        "parent_net_profit_yuan": 17598000000.0,
+        "deducted_net_profit_yuan": 17581000000.0,
+        "operating_cashflow_yuan": -202002000000.0,
+        "ocf_to_net_profit": -11.478690760313672,
+        "eps": 0.57,
+        "deducted_eps": 0.57,
+        "roe_pct": 2.55,
+        "gross_margin_pct": null,
+        "net_margin_pct": 38.7091154566,
+        "debt_asset_ratio_pct": 92.0895397076,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": 1.310448288034,
+        "parent_np_yoy_pct": 1.016015154124,
+        "deducted_np_yoy_pct": 2.131985593122,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2024年报",
+        "report_type": "年报",
+        "notice_date": "2025-03-29",
+        "revenue_yuan": 170748000000.0,
+        "parent_net_profit_yuan": 45257000000.0,
+        "deducted_net_profit_yuan": 44207000000.0,
+        "operating_cashflow_yuan": -333654000000.0,
+        "ocf_to_net_profit": -7.372428574585147,
+        "eps": 1.36,
+        "deducted_eps": 1.32,
+        "roe_pct": 6.28,
+        "gross_margin_pct": null,
+        "net_margin_pct": 26.8436526343,
+        "debt_asset_ratio_pct": 92.1286150321,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": -1.548715938051,
+        "parent_np_yoy_pct": 23.309356438341,
+        "deducted_np_yoy_pct": 30.473407709108,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2024三季报",
+        "report_type": "三季报",
+        "notice_date": "2024-10-31",
+        "revenue_yuan": 129839000000.0,
+        "parent_net_profit_yuan": 35223000000.0,
+        "deducted_net_profit_yuan": 33961000000.0,
+        "operating_cashflow_yuan": -161398000000.0,
+        "ocf_to_net_profit": -4.58217641881725,
+        "eps": 1.13,
+        "deducted_eps": 1.08,
+        "roe_pct": 5.25,
+        "gross_margin_pct": null,
+        "net_margin_pct": 27.4855782931,
+        "debt_asset_ratio_pct": 92.2370489782,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": -2.240710763092,
+        "parent_np_yoy_pct": 25.859358250554,
+        "deducted_np_yoy_pct": 34.771221080202,
+        "total_share": 33305838300.0
+      },
+      {
+        "report": "2024中报",
+        "report_type": "中报",
+        "notice_date": "2024-08-20",
+        "revenue_yuan": 88248000000.0,
+        "parent_net_profit_yuan": 26988000000.0,
+        "deducted_net_profit_yuan": 26806000000.0,
+        "operating_cashflow_yuan": -382642000000.0,
+        "ocf_to_net_profit": -14.178227360308286,
+        "eps": 0.89,
+        "deducted_eps": 0.89,
+        "roe_pct": 4.17,
+        "gross_margin_pct": null,
+        "net_margin_pct": 30.9627413652,
+        "debt_asset_ratio_pct": 91.8546133266,
+        "free_cashflow_yuan": null,
+        "revenue_yoy_pct": -3.268661624466,
+        "parent_np_yoy_pct": 16.639294666782,
+        "deducted_np_yoy_pct": 31.505102040816,
+        "total_share": 33305838300.0
+      }
+    ],
+    "checks": {
+      "deducted_net_profit_negative_latest_2y": false,
+      "ocf_to_net_profit_below_0_5_latest_3y": false,
+      "latest_annual_ocf_to_net_profit": 7.51
+    }
+  },
+  "valuation": {
+    "method": "derived_from_qfq_daily_close_and_reported_eps_roe",
+    "pe_ttm": 5.91,
+    "pb": 0.39,
+    "pe_5y_median": 7.22,
+    "pe_5y_percentile": 17.47,
+    "pb_5y_median": 0.47,
+    "pb_5y_percentile": 30.58,
+    "sample_days_pe": 641,
+    "sample_days_pb": 641,
+    "latest_effective_report": {
+      "report": "2026一季报",
+      "notice_date": "2026-04-30",
+      "ttm_eps": 1.47,
+      "book_value_per_share": 23.12
+    },
+    "note": "历史PE/PB为脚本估算值，使用前复权日收盘价与财报披露后的EPS/ROE口径；重大分红送转场景需人工复核。"
+  },
+  "earnings_forecast": {
+    "future_eps": null,
+    "note": "未接入可靠一致预期源；决策引擎所需未来第3年EPS仍应由研报一致预期或人工假设填入。"
+  },
+  "announcements": {
+    "减持": [],
+    "监管": [],
+    "回购": []
+  },
+  "ownership": {
+    "shareholder_count": {
+      "latest": {
+        "end_date": "2026-03-31",
+        "holder_num": 151091,
+        "previous_holder_num": 160813,
+        "holder_num_change": -9722,
+        "holder_num_change_pct": -6.05,
+        "avg_hold_num": 220435.62,
+        "avg_market_cap_yuan": 2244034.61
+      },
+      "recent": [
+        {
+          "end_date": "2026-03-31",
+          "holder_num": 151091,
+          "holder_num_change_pct": -6.05
+        },
+        {
+          "end_date": "2026-02-28",
+          "holder_num": 160813,
+          "holder_num_change_pct": 31.46
+        },
+        {
+          "end_date": "2025-12-31",
+          "holder_num": 122327,
+          "holder_num_change_pct": 2.71
+        },
+        {
+          "end_date": "2025-09-30",
+          "holder_num": 119099,
+          "holder_num_change_pct": 2.58
+        },
+        {
+          "end_date": "2025-06-30",
+          "holder_num": 116109,
+          "holder_num_change_pct": -6.69
+        },
+        {
+          "end_date": "2025-03-31",
+          "holder_num": 124428,
+          "holder_num_change_pct": -3.43
+        },
+        {
+          "end_date": "2025-02-28",
+          "holder_num": 128853,
+          "holder_num_change_pct": -4.06
+        },
+        {
+          "end_date": "2024-12-31",
+          "holder_num": 134311,
+          "holder_num_change_pct": -8.32
+        }
+      ]
+    },
+    "margin_trading": {
+      "latest": {
+        "date": "2026-07-03",
+        "financing_balance_yuan": 3833648719.0,
+        "securities_lending_balance_yuan": 17562490.0,
+        "margin_balance_yuan": 3851211209.0,
+        "financing_buy_yuan": 57258759.0,
+        "financing_repay_yuan": 39362838.0,
+        "financing_net_buy_yuan": 17895921.0,
+        "financing_balance_to_market_cap_pct": 1.32,
+        "financing_net_buy_5d_yuan": 15479789.0,
+        "financing_net_buy_10d_yuan": 64644265.0
+      },
+      "recent": [
+        {
+          "date": "2026-07-03",
+          "financing_balance_yuan": 3833648719.0,
+          "financing_net_buy_yuan": 17895921.0,
+          "financing_balance_to_market_cap_pct": 1.32
+        },
+        {
+          "date": "2026-07-02",
+          "financing_balance_yuan": 3815752799.0,
+          "financing_net_buy_yuan": -12837654.0,
+          "financing_balance_to_market_cap_pct": 1.32
+        },
+        {
+          "date": "2026-07-01",
+          "financing_balance_yuan": 3828590452.0,
+          "financing_net_buy_yuan": -14640593.0,
+          "financing_balance_to_market_cap_pct": 1.33
+        },
+        {
+          "date": "2026-06-30",
+          "financing_balance_yuan": 3843231045.0,
+          "financing_net_buy_yuan": 12633474.0,
+          "financing_balance_to_market_cap_pct": 1.34
+        },
+        {
+          "date": "2026-06-29",
+          "financing_balance_yuan": 3830597570.0,
+          "financing_net_buy_yuan": 12428641.0,
+          "financing_balance_to_market_cap_pct": 1.32
+        },
+        {
+          "date": "2026-06-26",
+          "financing_balance_yuan": 3818168929.0,
+          "financing_net_buy_yuan": 18185570.0,
+          "financing_balance_to_market_cap_pct": 1.31
+        },
+        {
+          "date": "2026-06-25",
+          "financing_balance_yuan": 3799983359.0,
+          "financing_net_buy_yuan": 22520538.0,
+          "financing_balance_to_market_cap_pct": 1.29
+        },
+        {
+          "date": "2026-06-24",
+          "financing_balance_yuan": 3777462822.0,
+          "financing_net_buy_yuan": 25638152.0,
+          "financing_balance_to_market_cap_pct": 1.27
+        },
+        {
+          "date": "2026-06-23",
+          "financing_balance_yuan": 3751824670.0,
+          "financing_net_buy_yuan": -4632136.0,
+          "financing_balance_to_market_cap_pct": 1.21
+        },
+        {
+          "date": "2026-06-22",
+          "financing_balance_yuan": 3756456806.0,
+          "financing_net_buy_yuan": -12547648.0,
+          "financing_balance_to_market_cap_pct": 1.23
+        }
+      ]
+    },
+    "northbound_holding": {
+      "latest": {
+        "trade_date": "2026-03-31",
+        "hold_shares": 458406940.0,
+        "hold_market_cap_yuan": 4666582649.2,
+        "a_shares_ratio_pct": 1.38,
+        "free_shares_ratio_pct": 1.38,
+        "close_price": 10.18
+      },
+      "note": "该接口可能为阶段性持股快照，日期滞后时不得当作当日北向流向。"
+    },
+    "unlock_schedule": {
+      "future_count": 0,
+      "next": []
+    }
+  },
+  "engine_flags": {
+    "a2_deducted_profit_negative_2y": false,
+    "c3_ocf_low_3y": false,
+    "short_term_above_ma20_and_rising": false,
+    "middle_term_above_ma60_and_rising": false,
+    "chase_high_1m_over_80_pct": false,
+    "chase_high_1m_50_to_80_pct": false,
+    "big_down_day_over_5_pct": false
+  },
+  "data_gaps_for_engine": [
+    "未来第3年EPS预估及假设需另行补充",
+    "监管/减持公告已提供标题和PDF链接，仍需人工复核公告原文实质内容"
+  ]
+}

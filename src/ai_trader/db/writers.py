@@ -730,6 +730,8 @@ def _position_row(account_id: str | None, symbol: str | None, position: dict[str
         "buy_logic": position.get("buy_logic"),
         "invalidation_point": position.get("invalidation_point"),
         "stop_loss_price": position.get("stop_loss_price"),
+        "target_price": position.get("target_price"),
+        "position_note": position.get("position_note"),
         "planned_position_pct": position.get("planned_position_pct"),
         "position_status": position.get("position_status"),
         "updated_at": position.get("updated_at"),

@@ -8,7 +8,7 @@
       <thead><tr><th>时间</th><th>来源</th><th>策略</th><th>区间</th><th>收益率</th><th>最大回撤</th><th>交易</th><th>结论</th><th>假设</th><th>下一步</th></tr></thead>
       <tbody>
         {% for item in iterations %}
-        <tr><td>{{ item.created_at | dash }}</td><td>{{ item.source_type | dash }}:{{ item.source_id | dash }}</td><td>{{ item.strategy_version | dash }}</td><td>{{ item.period_start | dash }} ~ {{ item.period_end | dash }}</td><td>{{ item.metrics.total_return_pct | pct }}</td><td>{{ item.metrics.max_drawdown_pct | pct }}</td><td>{{ item.metrics.trade_count | dash }}</td><td><span class="status-pill {{ item.conclusion | status_class }}">{{ item.conclusion | dash }}</span></td><td>{{ item.hypothesis | short_text(80) }}</td><td>{{ item.next_action | short_text(80) }}</td></tr>
+        <tr><td>{{ item.created_at | datetime }}</td><td>{{ item.source_type | dash }}:{{ item.source_id | dash }}</td><td>{{ item.strategy_version | dash }}</td><td>{{ item.period_start | dash }} ~ {{ item.period_end | dash }}</td><td>{{ item.metrics.total_return_pct | pct }}</td><td>{{ item.metrics.max_drawdown_pct | pct }}</td><td>{{ item.metrics.trade_count | dash }}</td><td><span class="status-pill {{ item.conclusion | status_class }}">{{ item.conclusion | dash }}</span></td><td>{{ item.hypothesis | short_text(80) }}</td><td>{{ item.next_action | short_text(80) }}</td></tr>
         {% else %}
         <tr><td colspan="10" class="muted">暂无策略迭代记录。</td></tr>
         {% endfor %}

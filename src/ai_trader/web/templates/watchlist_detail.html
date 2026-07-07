@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ stock.code }} 详情 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>{{ stock.name | dash }} {{ stock.code }}</h1>
+    <p>{{ stock.path | short_text(110) }}</p>
+  </div>
+  <a class="button-link secondary" href="{{ url_for('watchlists_page') }}">返回自选股</a>
+</section>
+
+<section class="metadata-grid">
+  <div><span>交易日</span><strong>{{ stock.trade_date | dash }}</strong></div>
+  <div><span>生成时间</span><strong>{{ stock.generated_at | datetime }}</strong></div>
+  <div><span>数据缺口</span><strong>{{ stock.data_gaps | length }}</strong></div>
+</section>
+
+<section class="layout-two">
+  <div class="panel">
+    <div class="panel-header"><h2>行情</h2></div>
+    <div class="table-wrap">
+      <table class="small-table">
+        <tbody>
+          {% for key, value in stock.quote.items() %}
+          <tr><th>{{ key }}</th><td>{{ value | dash }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-header"><h2>技术与估值</h2></div>
+    <div class="table-wrap">
+      <table class="small-table">
+        <tbody>
+          {% for key, value in stock.technical.items() %}
+          <tr><th>technical.{{ key }}</th><td>{{ value | dash }}</td></tr>
+          {% endfor %}
+          {% for key, value in stock.valuation.items() %}
+          <tr><th>valuation.{{ key }}</th><td>{{ value | dash }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>数据缺口</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>说明</th></tr></thead>
+      <tbody>
+        {% for gap in stock.data_gaps %}
+        <tr><td>{{ loop.index }}</td><td>{{ gap | dash }}</td></tr>
+        {% else %}
+        <tr><td colspan="2" class="muted">暂无缺口。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>完整 JSON</h2></div>
+  <pre class="json-preview">{{ stock.raw_json }}</pre>
+</section>
+{% endblock %}

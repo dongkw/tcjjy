@@ -2,7 +2,7 @@
 {% block title %}报告详情 - 天才交易员{% endblock %}
 {% block content %}
 <section class="page-header">
-  <div><h1>{{ report.title | dash }}</h1><p>{{ report.report_type | dash }} · {{ report.symbol | dash }} · {{ report.created_at | dash }}</p></div>
+  <div><h1>{{ report.title | dash }}</h1><p>{{ report.report_type | dash }} · {{ report.symbol | dash }} · {{ report.created_at | datetime }}</p></div>
   <a class="button-link secondary" href="{{ url_for('reports_page') }}">返回报告</a>
 </section>
 <section class="panel">

@@ -7,6 +7,10 @@
     <p>查看数据库状态、账户概览、最近决策和风险提示。</p>
   </div>
   <div class="action-row">
+    <form method="post" action="{{ url_for('action_refresh_position_market') }}">
+      <input type="hidden" name="return_to" value="/">
+      <button type="submit">刷新持仓行情</button>
+    </form>
     <form method="post" action="{{ url_for('action_import_json') }}"><button type="submit">刷新导入</button></form>
     <form method="post" action="{{ url_for('action_validate') }}"><button type="submit" class="secondary">执行校验</button></form>
     <form method="post" action="{{ url_for('action_backup') }}"><button type="submit" class="secondary">生成备份</button></form>
@@ -81,7 +85,7 @@
         <tbody>
           {% for item in recent_decisions %}
           <tr>
-            <td>{{ item.decision_time | dash }}</td>
+            <td>{{ item.decision_time | datetime }}</td>
             <td>{{ item.symbol | dash }}</td>
             <td>{{ item.task_type | dash }}</td>
             <td><span class="status-pill {{ item.final_action | status_class }}">{{ item.final_action | dash }}</span></td>
@@ -102,7 +106,7 @@
       {% for item in recent_reports %}
       <a class="report-link" href="{{ url_for('report_detail_page', report_id=item.report_id) }}">
         <span>{{ item.title | short_text(48) }}</span>
-        <small>{{ item.report_type | dash }} · {{ item.symbol | dash }} · {{ item.created_at | dash }}</small>
+        <small>{{ item.report_type | dash }} · {{ item.symbol | dash }} · {{ item.created_at | datetime }}</small>
       </a>
       {% else %}
       <div class="muted">暂无报告。</div>

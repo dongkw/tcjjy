@@ -1,0 +1,5 @@
+account_id,symbol,name,total_quantity,available_quantity,market_price,avg_cost,market_value,unrealized_pnl,unrealized_pnl_pct,asset_type,position_status,buy_logic,invalidation_point,source,source_time,need_confirm,note
+real_shadow,000001,平安银行,600,600,10.500,10.2284,6300.00,162.94,2.66,A_STOCK,ACTIVE,,,broker_screenshot,2026-07-06 07:33,true,股票代码按名称推测，需确认
+real_shadow,000969,安泰科技,200,200,22.750,20.8022,4550.00,389.56,9.36,A_STOCK,ACTIVE,,,broker_screenshot,2026-07-06 07:33,true,股票代码按名称推测，需确认
+real_shadow,002563,森马服饰,1400,1400,5.720,5.1736,8008.00,764.92,10.56,A_STOCK,ACTIVE,,,broker_screenshot,2026-07-06 07:33,true,股票代码按名称推测，需确认
+real_shadow,600398,海澜之家,400,400,5.640,6.0322,2256.00,-156.89,-6.50,A_STOCK,ACTIVE,,,broker_screenshot,2026-07-06 07:33,true,股票代码按名称推测，需确认

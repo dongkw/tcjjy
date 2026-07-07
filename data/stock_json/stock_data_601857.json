@@ -1,63 +1,50 @@
 {
   "meta": {
-    "generated_at": "2026-07-03T15:50:43",
-    "requested_period": "short",
-    "source": "Eastmoney quote/kline/finance/announcement APIs"
+    "generated_at": "2026-07-06T19:58:37",
+    "requested_period": "middle",
+    "source": "Tencent quote/kline plus Eastmoney finance/announcement/ownership APIs"
   },
   "quote": {
     "code": "601857",
     "name": "中国石油",
     "market": "SH",
-    "trade_date": "2026-07-03",
-    "price": 8.97,
-    "open": 8.87,
-    "high": 9.01,
-    "low": 8.82,
-    "previous_close": 8.82,
-    "change": 0.15,
-    "pct_change": 1.7,
-    "volume_lots": 1463951.0,
-    "amount_yuan": 1308100000.0,
-    "market_cap_yuan": 1452441000000.0,
-    "pe_ttm": 10.38,
-    "pb": 1.04,
+    "trade_date": "2026-07-06",
+    "price": 9.09,
+    "open": 8.9,
+    "high": 9.14,
+    "low": 8.85,
+    "previous_close": 8.97,
+    "change": 0.12,
+    "pct_change": 1.34,
+    "volume_lots": 1376047.0,
+    "amount_yuan": 1245890000.0,
+    "market_cap_yuan": 1471872000000.0,
+    "pe_ttm": 10.52,
+    "pb": 1.05,
     "dividend_yield_pct": null,
     "roe_pct_quote": null,
     "net_margin_pct_quote": null,
     "trading_status": null
   },
   "technical": {
-    "last_date": "2026-07-03",
-    "close": 8.97,
-    "day_pct_change": 1.7,
+    "last_date": "2026-07-06",
+    "close": 9.09,
+    "day_pct_change": 1.34,
     "amount_yuan": 0.0,
-    "ma20": 9.47,
-    "ma60": 10.64,
-    "ma120": 10.78,
+    "ma20": 9.41,
+    "ma60": 10.59,
+    "ma120": 10.77,
     "ma20_slope_up": false,
     "ma60_slope_up": false,
     "above_ma20": false,
     "above_ma60": false,
-    "change_5d_pct": 0.45,
-    "change_20d_pct": -13.75,
-    "change_60d_pct": -25.75,
+    "change_5d_pct": 1.91,
+    "change_20d_pct": -12.26,
+    "change_60d_pct": -26.16,
     "high_20d": 10.74,
     "low_20d": 8.59,
-    "atr14_pct": 3.03,
+    "atr14_pct": 2.99,
     "recent_10d": [
-      {
-        "date": "2026-06-22",
-        "open": 9.34,
-        "close": 9.43,
-        "high": 9.52,
-        "low": 9.26,
-        "volume": 1514545.0,
-        "amount": 0.0,
-        "amplitude_pct": 2.79,
-        "pct_change": 1.07,
-        "change": 0.1,
-        "turnover_pct": 0.0
-      },
       {
         "date": "2026-06-23",
         "open": 9.43,
@@ -173,6 +160,19 @@
         "amplitude_pct": 2.15,
         "pct_change": 1.7,
         "change": 0.15,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-06",
+        "open": 8.9,
+        "close": 9.09,
+        "high": 9.14,
+        "low": 8.85,
+        "volume": 1376047.0,
+        "amount": 0.0,
+        "amplitude_pct": 3.23,
+        "pct_change": 1.34,
+        "change": 0.12,
         "turnover_pct": 0.0
       }
     ]
@@ -440,10 +440,178 @@
       "latest_annual_ocf_to_net_profit": 2.62
     }
   },
+  "valuation": {
+    "method": "derived_from_qfq_daily_close_and_reported_eps_roe",
+    "pe_ttm": 10.52,
+    "pb": 1.05,
+    "pe_5y_median": 9.13,
+    "pe_5y_percentile": 72.39,
+    "pb_5y_median": 0.98,
+    "pb_5y_percentile": 63.81,
+    "sample_days_pe": 641,
+    "sample_days_pb": 641,
+    "latest_effective_report": {
+      "report": "2026一季报",
+      "notice_date": "2026-04-30",
+      "ttm_eps": 0.87,
+      "book_value_per_share": 8.8
+    },
+    "note": "历史PE/PB为脚本估算值，使用前复权日收盘价与财报披露后的EPS/ROE口径；重大分红送转场景需人工复核。"
+  },
+  "earnings_forecast": {
+    "future_eps": null,
+    "note": "未接入可靠一致预期源；决策引擎所需未来第3年EPS仍应由研报一致预期或人工假设填入。"
+  },
   "announcements": {
     "减持": [],
     "监管": [],
     "回购": []
+  },
+  "ownership": {
+    "shareholder_count": {
+      "latest": {
+        "end_date": "2026-03-31",
+        "holder_num": 606489,
+        "previous_holder_num": 460783,
+        "holder_num_change": 145706,
+        "holder_num_change_pct": 31.62,
+        "avg_hold_num": 266982.71,
+        "avg_market_cap_yuan": 3254519.26
+      },
+      "recent": [
+        {
+          "end_date": "2026-03-31",
+          "holder_num": 606489,
+          "holder_num_change_pct": 31.62
+        },
+        {
+          "end_date": "2026-02-28",
+          "holder_num": 460783,
+          "holder_num_change_pct": 11.56
+        },
+        {
+          "end_date": "2025-12-31",
+          "holder_num": 413052,
+          "holder_num_change_pct": -17.19
+        },
+        {
+          "end_date": "2025-09-30",
+          "holder_num": 498807,
+          "holder_num_change_pct": 4.52
+        },
+        {
+          "end_date": "2025-06-30",
+          "holder_num": 477228,
+          "holder_num_change_pct": -8.9
+        },
+        {
+          "end_date": "2025-03-31",
+          "holder_num": 523837,
+          "holder_num_change_pct": -3.44
+        },
+        {
+          "end_date": "2025-02-28",
+          "holder_num": 542478,
+          "holder_num_change_pct": 11.6
+        },
+        {
+          "end_date": "2024-12-31",
+          "holder_num": 486082,
+          "holder_num_change_pct": -4.39
+        }
+      ]
+    },
+    "margin_trading": {
+      "latest": {
+        "date": "2026-07-03",
+        "financing_balance_yuan": 1859961046.0,
+        "securities_lending_balance_yuan": 21432918.0,
+        "margin_balance_yuan": 1881393964.0,
+        "financing_buy_yuan": 104775877.0,
+        "financing_repay_yuan": 89595238.0,
+        "financing_net_buy_yuan": 15180639.0,
+        "financing_balance_to_market_cap_pct": 0.13,
+        "financing_net_buy_5d_yuan": -68710281.0,
+        "financing_net_buy_10d_yuan": -294826990.0
+      },
+      "recent": [
+        {
+          "date": "2026-07-03",
+          "financing_balance_yuan": 1859961046.0,
+          "financing_net_buy_yuan": 15180639.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-07-02",
+          "financing_balance_yuan": 1844780408.0,
+          "financing_net_buy_yuan": -45700280.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-07-01",
+          "financing_balance_yuan": 1890480689.0,
+          "financing_net_buy_yuan": -19546490.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-30",
+          "financing_balance_yuan": 1910027178.0,
+          "financing_net_buy_yuan": 29044224.0,
+          "financing_balance_to_market_cap_pct": 0.14
+        },
+        {
+          "date": "2026-06-29",
+          "financing_balance_yuan": 1880982955.0,
+          "financing_net_buy_yuan": -47688374.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-26",
+          "financing_balance_yuan": 1928671329.0,
+          "financing_net_buy_yuan": -27807429.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-25",
+          "financing_balance_yuan": 1956478758.0,
+          "financing_net_buy_yuan": -45108191.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-24",
+          "financing_balance_yuan": 2001586949.0,
+          "financing_net_buy_yuan": -55362239.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-23",
+          "financing_balance_yuan": 2056949188.0,
+          "financing_net_buy_yuan": -11958518.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        },
+        {
+          "date": "2026-06-22",
+          "financing_balance_yuan": 2068907707.0,
+          "financing_net_buy_yuan": -85880332.0,
+          "financing_balance_to_market_cap_pct": 0.13
+        }
+      ]
+    },
+    "northbound_holding": {
+      "latest": {
+        "trade_date": "2026-03-31",
+        "hold_shares": 555437097.0,
+        "hold_market_cap_yuan": 6770778212.43,
+        "a_shares_ratio_pct": 0.34,
+        "free_shares_ratio_pct": 0.34,
+        "close_price": 12.19
+      },
+      "note": "该接口可能为阶段性持股快照，日期滞后时不得当作当日北向流向。"
+    },
+    "unlock_schedule": {
+      "future_count": 0,
+      "next": []
+    }
   },
   "engine_flags": {
     "a2_deducted_profit_negative_2y": false,
@@ -455,9 +623,7 @@
     "big_down_day_over_5_pct": false
   },
   "data_gaps_for_engine": [
-    "近5年PE中位数/分位数需另行补充或人工确认",
     "未来第3年EPS预估及假设需另行补充",
-    "股东户数、融资余额、北向资金、解禁等筹码项未完整抓取",
-    "监管/减持公告仅按标题关键词抓取，需人工复核原公告"
+    "监管/减持公告已提供标题和PDF链接，仍需人工复核公告原文实质内容"
   ]
 }

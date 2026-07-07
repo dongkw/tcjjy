@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}自选股 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>自选股</h1>
+    <p>自选股、分组、行情摘要都来自数据库；勾选股票后按需刷新。</p>
+  </div>
+  <form class="inline-form" method="post" action="{{ url_for('action_watchlist_bootstrap') }}">
+    <button class="secondary" type="submit">初始化自选股数据库</button>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="tab-row">
+    {% for tab in tabs %}
+    <span class="tab-shell">
+      <a class="tab-link {{ 'active' if tab.tab_id == active_tab.tab_id else '' }}" href="{{ url_for('watchlists_page') }}?tab={{ tab.tab_id }}">
+        {{ tab.name }} <span>{{ tab.count }}</span>
+      </a>
+      {% if tab.tab_type == 'user' and tab.tab_id == active_tab.tab_id %}
+      <form method="post" action="{{ url_for('action_watchlist_delete_tab') }}">
+        <input type="hidden" name="tab" value="{{ tab.tab_id }}">
+        <button class="icon-button danger" type="submit" title="删除当前 tab">×</button>
+      </form>
+      {% endif %}
+    </span>
+    {% else %}
+    <span class="muted">暂无 tab，请先初始化。</span>
+    {% endfor %}
+  </div>
+  <div class="toolbar-grid">
+    <form method="get" action="{{ url_for('watchlists_page') }}">
+      <input type="hidden" name="tab" value="{{ active_tab.tab_id }}">
+      <input name="q" value="{{ filters.q }}" placeholder="按股票代码或名称搜索">
+      <button type="submit">搜索</button>
+      {% if filters.q %}
+      <a class="button-link secondary" href="{{ url_for('watchlists_page') }}?tab={{ active_tab.tab_id }}">清空</a>
+      {% endif %}
+    </form>
+    <form method="post" action="{{ url_for('action_watchlist_add_stock') }}">
+      <input type="hidden" name="tab" value="{{ active_tab.tab_id }}">
+      <input name="symbol" placeholder="输入股票代码加入当前 tab">
+      <button type="submit">加入自选</button>
+    </form>
+    <form method="post" action="{{ url_for('action_watchlist_add_tab') }}">
+      <input name="name" placeholder="新 tab 名称">
+      <button class="secondary" type="submit">新增 tab</button>
+    </form>
+  </div>
+</section>
+
+<section class="panel">
+  <form id="watchlist-refresh-form" method="post" action="{{ url_for('action_watchlist_refresh_selected') }}">
+    <input type="hidden" name="tab" value="{{ active_tab.tab_id }}">
+    <input type="hidden" name="q" value="{{ filters.q }}">
+  </form>
+  <form id="watchlist-screen-form" method="post" action="{{ url_for('action_watchlist_screen_selected') }}">
+    <input type="hidden" name="tab" value="{{ active_tab.tab_id }}">
+    <input type="hidden" name="q" value="{{ filters.q }}">
+  </form>
+  <div class="panel-header">
+    <div>
+      <h2>{{ active_tab.name | dash }}</h2>
+      <span class="muted">共 {{ pagination.total }} 只，第 {{ pagination.page }} / {{ pagination.page_count }} 页</span>
+    </div>
+    <div class="action-row">
+      <button form="watchlist-refresh-form" type="submit">刷新选中</button>
+      <button form="watchlist-screen-form" class="secondary" type="submit">生成盘前筛选</button>
+      <a class="button-link secondary" href="{{ url_for('watchlist_screens_page') }}">筛选记录</a>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><input class="select-all" type="checkbox" aria-label="全选"></th>
+          <th>#</th>
+          <th>代码</th>
+          <th>名称</th>
+          <th>现价</th>
+          <th>涨跌幅</th>
+          <th>PE</th>
+          <th>PB</th>
+          <th>20日</th>
+          <th>MA20</th>
+          <th>MA60</th>
+          <th>交易日</th>
+          <th>更新时间</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for stock in stocks %}
+        <tr>
+          <td>
+            <input form="watchlist-refresh-form" type="checkbox" name="codes" value="{{ stock.code }}" aria-label="选择 {{ stock.code }}">
+            <input form="watchlist-screen-form" type="checkbox" name="codes" value="{{ stock.code }}" class="mirror-checkbox" hidden>
+          </td>
+          <td>{{ ((pagination.page - 1) * pagination.page_size) + loop.index }}</td>
+          <td>{{ stock.code }}</td>
+          <td>{{ stock.name | dash }}</td>
+          <td>{{ stock.price | money }}</td>
+          <td><span class="market-change {{ stock.pct_class }}">{{ stock.pct_change | pct }}</span></td>
+          <td>{{ stock.pe_ttm | money }}</td>
+          <td>{{ stock.pb | money }}</td>
+          <td><span class="market-change {{ stock.change_20d_class }}">{{ stock.change_20d_pct | pct }}</span></td>
+          <td>{{ stock.ma20 | money }}</td>
+          <td>{{ stock.ma60 | money }}</td>
+          <td>{{ stock.trade_date | dash }}</td>
+          <td>{{ stock.updated_at | datetime }}</td>
+          <td><span class="status-pill {{ stock.status | status_class }}">{{ stock.status }}</span></td>
+          <td>
+            {% if stock.status == 'OK' %}
+            <a class="button-link secondary small" href="{{ url_for('watchlist_detail_page', code=stock.code) }}">详情</a>
+            {% endif %}
+            {% if active_tab.tab_id != 'positions' %}
+            <form class="inline-form" method="post" action="{{ url_for('action_watchlist_remove_stock') }}">
+              <input type="hidden" name="tab" value="{{ active_tab.tab_id }}">
+              <input type="hidden" name="q" value="{{ filters.q }}">
+              <input type="hidden" name="symbol" value="{{ stock.code }}">
+              <button class="secondary small" type="submit">移出</button>
+            </form>
+            {% elif stock.status != 'OK' %}
+            <span class="muted">先刷新</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="15" class="muted">暂无股票。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="pagination-row">
+  {% if pagination.prev_page %}
+  <a class="button-link secondary" href="{{ url_for('watchlists_page') }}?tab={{ active_tab.tab_id }}&q={{ filters.q }}&page={{ pagination.prev_page }}&page_size={{ pagination.page_size }}">上一页</a>
+  {% endif %}
+  <span class="muted">每页 {{ pagination.page_size }} 条，共 {{ pagination.total }} 条</span>
+  {% if pagination.next_page %}
+  <a class="button-link secondary" href="{{ url_for('watchlists_page') }}?tab={{ active_tab.tab_id }}&q={{ filters.q }}&page={{ pagination.next_page }}&page_size={{ pagination.page_size }}">下一页</a>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block title %}持仓 - 天才交易员{% endblock %}
 {% block content %}
-<section class="page-header"><div><h1>持仓</h1><p>重点看可卖数量、T+1 锁定、证伪点和止损价。</p></div></section>
+<section class="page-header">
+  <div><h1>持仓</h1><p>重点看可卖数量、T+1 锁定、证伪点和止损价。</p></div>
+  <form method="post" action="{{ url_for('action_refresh_position_market') }}">
+    <input type="hidden" name="return_to" value="/positions">
+    <button type="submit">刷新持仓行情</button>
+  </form>
+</section>
 <section class="panel">
   <div class="table-wrap">
     <table>
@@ -11,7 +17,9 @@
       <tbody>
         {% for item in positions %}
         <tr class="{{ 'row-warning' if item.locked_quantity else '' }}">
-          <td>{{ item.account_id | dash }}</td><td>{{ item.symbol | dash }}</td><td>{{ item.name | dash }}</td><td>{{ item.asset_type | dash }}</td>
+          <td>{{ item.account_id | dash }}</td>
+          <td><a href="{{ url_for('position_detail_page', account_id=item.account_id, symbol=item.symbol) }}">{{ item.symbol | dash }}</a></td>
+          <td>{{ item.name | dash }}</td><td>{{ item.asset_type | dash }}</td>
           <td>{{ item.total_quantity | dash }}</td><td>{{ item.available_quantity | dash }}</td><td>{{ item.locked_quantity | dash }}</td>
           <td>{{ item.avg_cost | money }}</td><td>{{ item.market_price | money }}</td><td>{{ item.market_value | money }}</td>
           <td>{{ item.unrealized_pnl | money }} / {{ item.unrealized_pnl_pct | pct }}</td><td>{{ item.position_pct | pct }}</td>

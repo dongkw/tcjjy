@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}决策详情 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>{{ decision.name | dash }} {{ decision.symbol | dash }}</h1>
+    <p>{{ decision.display_task | dash }} / {{ decision.decision_time | datetime }}</p>
+  </div>
+  <div class="action-row">
+    <a class="button-link secondary" href="{{ url_for('decisions_page') }}?symbol={{ decision.symbol }}">返回决策列表</a>
+    {% if decision.report %}
+    <a class="button-link secondary" href="{{ url_for('report_detail_page', report_id=decision.report.report_id) }}">查看报告</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="metadata-grid">
+  <div><span>交易日</span><strong>{{ decision.trade_date | dash }}</strong></div>
+  <div><span>任务</span><strong>{{ decision.display_task | dash }}</strong></div>
+  <div><span>置信度</span><strong>{{ decision.confidence | dash }}</strong></div>
+  <div><span>结论</span><strong>{{ decision.display_action | dash }}</strong></div>
+  <div><span>人工复核</span><strong>{{ '是' if decision.human_review_required else '否' }}</strong></div>
+  <div><span>决策 ID</span><strong>{{ decision.decision_id | dash }}</strong></div>
+</section>
+
+{% if decision.is_combined %}
+<section class="layout-two">
+  <div class="panel">
+    <div class="panel-header"><h2>持仓判断</h2></div>
+    <div class="metadata-grid settings-grid">
+      <div><span>动作</span><strong>{{ decision.holding_review.display_action | dash }}</strong></div>
+      <div><span>信心</span><strong>{{ decision.holding_review.confidence | dash }}</strong></div>
+      <div><span>原因</span><strong>{{ decision.holding_review.display_reason | dash }}</strong></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-header"><h2>买入/加仓判断</h2></div>
+    <div class="metadata-grid settings-grid">
+      <div><span>动作</span><strong>{{ decision.buy_evaluation.display_action | dash }}</strong></div>
+      <div><span>信心</span><strong>{{ decision.buy_evaluation.confidence | dash }}</strong></div>
+      <div><span>原因</span><strong>{{ decision.buy_evaluation.display_reason | dash }}</strong></div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-header"><h2>关键价位</h2></div>
+  <div class="table-wrap">
+    <table>
+      <tbody>
+        {% for key, value in decision.trigger_prices.items() %}
+        <tr><th>{{ key }}</th><td>{{ value | money }}</td></tr>
+        {% else %}
+        <tr><td class="muted">暂无关键价位。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>规则明细</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>规则</th><th>状态</th><th>级别</th><th>说明</th></tr></thead>
+      <tbody>
+        {% set rules = decision.rule_results %}
+        {% if decision.is_combined %}
+          {% set rules = (decision.holding_review.rule_results or []) + (decision.buy_evaluation.rule_results or []) %}
+        {% endif %}
+        {% for rule in rules %}
+        <tr>
+          <td>{{ rule.rule_id | dash }}</td>
+          <td><span class="status-pill {{ rule.status | status_class }}">{{ rule.status | dash }}</span></td>
+          <td>{{ rule.severity | dash }}</td>
+          <td class="wrap-cell">{{ rule.message | dash }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">暂无规则明细。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>数据质量与时间</h2></div>
+  <div class="metadata-grid">
+    <div><span>数据质量</span><strong>{{ decision.data_quality.level | dash }} / {{ decision.data_quality.score | dash }}</strong></div>
+    <div><span>时段</span><strong>{{ decision.time_context.session_name | dash }}</strong></div>
+    <div><span>数据截止</span><strong>{{ decision.time_context.effective_data_cutoff | dash }}</strong></div>
+  </div>
+</section>
+{% endblock %}

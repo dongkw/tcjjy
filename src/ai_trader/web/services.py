@@ -13,6 +13,7 @@ from ..db.connection import connect
 from ..db.consistency import reconcile_database
 from ..db.repositories import count_rows, table_exists
 from ..db.validators import REQUIRED_TABLES, summary_database, validate_database
+from ..db.watchlists import sync_positions_tab
 from ..file_store import read_jsonl
 from ..portfolio import now_iso
 from ..timekeeper import _tzinfo
@@ -238,12 +239,49 @@ def positions(settings: DashboardSettings) -> list[dict[str, Any]]:
         SELECT account_id, symbol, name, asset_type, total_quantity, available_quantity,
                locked_quantity, avg_cost, market_price, market_value, unrealized_pnl,
                unrealized_pnl_pct, position_pct, first_buy_date, last_trade_date,
-               buy_logic, invalidation_point, stop_loss_price, planned_position_pct,
+               buy_logic, invalidation_point, stop_loss_price, target_price, position_note, planned_position_pct,
                position_status, updated_at
         FROM positions
         ORDER BY account_id, COALESCE(position_status, 'ACTIVE'), symbol
         """,
     )
+
+
+def position_detail(settings: DashboardSettings, account_id: str, symbol: str) -> dict[str, Any] | None:
+    position = one(
+        settings,
+        """
+        SELECT account_id, symbol, name, asset_type, total_quantity, available_quantity,
+               locked_quantity, avg_cost, market_price, market_value, unrealized_pnl,
+               unrealized_pnl_pct, position_pct, first_buy_date, last_trade_date,
+               buy_logic, invalidation_point, stop_loss_price, target_price, position_note,
+               planned_position_pct, position_status, updated_at, payload_json
+        FROM positions
+        WHERE account_id = ? AND symbol = ?
+        """,
+        (account_id, symbol),
+    )
+    if position is None:
+        return None
+    position["payload"] = parse_json(position.get("payload_json"), {})
+    position["recent_decisions"] = decisions(settings, symbol=symbol, limit=12)
+    position["latest_decision"] = position["recent_decisions"][0] if position["recent_decisions"] else None
+    position["audit_logs"] = safe_rows(
+        settings,
+        "audit_logs",
+        """
+        SELECT audit_id, operation, before_value_json, after_value_json, reason, operator, created_at
+        FROM audit_logs
+        WHERE target_type = 'POSITION' AND target_id = ?
+        ORDER BY created_at DESC
+        LIMIT 10
+        """,
+        (f"{account_id}:{symbol}",),
+    )
+    for audit in position["audit_logs"]:
+        audit["before_value"] = parse_json(audit.get("before_value_json"), {})
+        audit["after_value"] = parse_json(audit.get("after_value_json"), {})
+    return position
 
 
 def decisions(
@@ -267,13 +305,14 @@ def decisions(
         params.append(task_type)
     where_sql = f"WHERE {' AND '.join(where)}" if where else ""
     params.append(limit)
-    return safe_rows(
+    items = safe_rows(
         settings,
         "decision_results",
         f"""
         SELECT decision_id, snapshot_id, symbol, name, task_type, trade_date,
                decision_time, strategy_version, schema_version, final_action,
-               confidence, action_reason, human_review_required, artifact_id, created_at
+               confidence, action_reason, human_review_required, artifact_id, created_at,
+               payload_json
         FROM decision_results
         {where_sql}
         ORDER BY COALESCE(decision_time, created_at, '') DESC
@@ -281,6 +320,103 @@ def decisions(
         """,
         tuple(params),
     )
+    for item in items:
+        enrich_decision_item(item)
+    return items
+
+
+def enrich_decision_item(item: dict[str, Any]) -> None:
+    payload = parse_json(item.get("payload_json"), {})
+    item["display_task"] = decision_task_label(item.get("task_type"))
+    item["display_action"] = decision_action_label(item.get("final_action"))
+    item["display_reason"] = item.get("action_reason")
+    item["is_combined"] = item.get("task_type") == "POSITION_COMBINED_REVIEW"
+    if item["is_combined"]:
+        holding = payload.get("holding_review") or {}
+        buy = payload.get("buy_evaluation") or {}
+        item["holding_action"] = holding.get("final_action")
+        item["buy_action"] = buy.get("final_action")
+        item["display_action"] = f"持仓：{decision_action_label(item['holding_action'])} / 买入：{decision_action_label(item['buy_action'])}"
+        item["display_reason"] = f"持仓：{decision_reason_label(holding.get('action_reason'))}；买入：{decision_reason_label(buy.get('action_reason'))}"
+
+
+def decision_task_label(value: Any) -> str:
+    return {
+        "BUY_EVALUATION": "买入评估",
+        "HOLDING_REVIEW": "持仓复查",
+        "POSITION_COMBINED_REVIEW": "持仓合并决策",
+    }.get(str(value or ""), str(value or ""))
+
+
+def decision_action_label(value: Any) -> str:
+    return {
+        "BUY": "买入",
+        "WATCH_SMALL": "小仓观察",
+        "WAIT": "等待",
+        "DO_NOT_BUY": "不买",
+        "DATA_BLOCKED": "数据不足",
+        "HOLD": "持有",
+        "REDUCE_HALF": "减仓一半",
+        "REDUCE_TO_WATCH": "减到观察仓",
+        "CLEAR": "清仓",
+        "NO_SELL_T_PLUS": "T+1 暂不可卖",
+        "PRE_EVALUATION": "预评估",
+    }.get(str(value or ""), str(value or ""))
+
+
+def decision_reason_label(value: Any) -> str:
+    return {
+        "price is below MA20": "价格跌破 MA20",
+        "price is below MA60": "价格跌破 MA60",
+        "price is below the recent 20-day low": "价格跌破近 20 日低点",
+        "no sell trigger is active": "未触发卖出规则",
+        "trend confirmation is incomplete": "趋势确认不完整",
+        "short-term gain is high; only small watch position is allowed": "短期涨幅较高，只适合小仓观察",
+        "holding cost, position, buy logic, or invalidation point is missing": "持仓上下文不完整",
+    }.get(str(value or ""), str(value or ""))
+
+
+def decision_detail(settings: DashboardSettings, decision_id: str) -> dict[str, Any] | None:
+    item = one(
+        settings,
+        """
+        SELECT decision_id, snapshot_id, symbol, name, task_type, trade_date,
+               decision_time, strategy_version, schema_version, final_action,
+               confidence, action_reason, human_review_required, trigger_prices_json,
+               payload_json, artifact_id, created_at
+        FROM decision_results
+        WHERE decision_id = ?
+        """,
+        (decision_id,),
+    )
+    if item is None:
+        return None
+    enrich_decision_item(item)
+    payload = parse_json(item.get("payload_json"), {})
+    item["payload"] = payload
+    item["trigger_prices"] = parse_json(item.get("trigger_prices_json"), {})
+    item["rule_results"] = payload.get("rule_results") or []
+    item["data_quality"] = payload.get("data_quality_summary") or {}
+    item["time_context"] = payload.get("time_context") or {}
+    item["holding_review"] = payload.get("holding_review") or None
+    item["buy_evaluation"] = payload.get("buy_evaluation") or None
+    for section in ["holding_review", "buy_evaluation"]:
+        if item.get(section):
+            item[section]["display_action"] = decision_action_label(item[section].get("final_action"))
+            item[section]["display_reason"] = decision_reason_label(item[section].get("action_reason"))
+    report = one(
+        settings,
+        """
+        SELECT report_id, relative_path
+        FROM reports
+        WHERE source_type='decision_result' AND source_id=?
+        ORDER BY COALESCE(created_at, '') DESC
+        LIMIT 1
+        """,
+        (decision_id,),
+    )
+    item["report"] = report
+    return item
 
 
 def risk_checks(settings: DashboardSettings, limit: int = 100) -> list[dict[str, Any]]:
@@ -334,6 +470,25 @@ def order_intents(settings: DashboardSettings, limit: int = 100) -> list[dict[st
 
 
 def workflows(settings: DashboardSettings, limit: int = 100) -> dict[str, list[dict[str, Any]]]:
+    position_checks = safe_rows(
+        settings,
+        "position_pre_market_checks",
+        """
+        SELECT check_id, account_id, symbol, name, trade_date, check_time,
+               category, severity, rule_code, message, current_price,
+               reference_price, position_pct, available_quantity, locked_quantity,
+               review_status, review_action, reviewed_at, review_note
+        FROM position_pre_market_checks
+        ORDER BY COALESCE(check_time, '') DESC,
+                 CASE severity WHEN 'HIGH' THEN 1 WHEN 'MEDIUM' THEN 2 WHEN 'LOW' THEN 3 ELSE 9 END,
+                 symbol
+        LIMIT ?
+        """,
+        (limit,),
+    )
+    for item in position_checks:
+        review_note = parse_json(item.get("review_note"), {})
+        item["decision_id"] = review_note.get("decision_id") if isinstance(review_note, dict) else None
     return {
         "runs": safe_rows(
             settings,
@@ -375,6 +530,7 @@ def workflows(settings: DashboardSettings, limit: int = 100) -> dict[str, list[d
             """,
             (limit,),
         ),
+        "position_checks": position_checks,
     }
 
 
@@ -433,6 +589,374 @@ def reports(settings: DashboardSettings, limit: int = 200) -> list[dict[str, Any
         """,
         (limit,),
     )
+
+
+def watchlists(settings: DashboardSettings) -> dict[str, Any]:
+    tab_id = "all"
+    q = ""
+    page = 1
+    page_size = 20
+    return watchlists_page_data(settings, tab_id=tab_id, q=q, page=page, page_size=page_size)
+
+
+def watchlists_page_data(
+    settings: DashboardSettings,
+    *,
+    tab_id: str,
+    q: str,
+    page: int,
+    page_size: int,
+) -> dict[str, Any]:
+    conn = connect_if_ready(settings)
+    if conn is None:
+        return empty_watchlist_page(tab_id, q, page, page_size)
+    with conn:
+        if not table_exists(conn, "watchlist_tabs") or not table_exists(conn, "watchlist_items"):
+            return empty_watchlist_page(tab_id, q, page, page_size)
+        sync_positions_tab(conn)
+        conn.commit()
+        tabs = [
+            dict(row)
+            for row in conn.execute(
+                """
+                SELECT t.tab_id, t.name, t.tab_type, t.sort_order, t.is_default,
+                       COUNT(i.item_id) AS count
+                FROM watchlist_tabs t
+                LEFT JOIN watchlist_items i ON i.tab_id = t.tab_id
+                WHERE t.is_active = 1
+                GROUP BY t.tab_id, t.name, t.tab_type, t.sort_order, t.is_default
+                ORDER BY t.sort_order, t.created_at
+                """
+            ).fetchall()
+        ]
+        if not tabs:
+            return empty_watchlist_page(tab_id, q, page, page_size)
+        tab_ids = {tab["tab_id"] for tab in tabs}
+        active_tab_id = tab_id if tab_id in tab_ids else tabs[0]["tab_id"]
+        active_tab = next(tab for tab in tabs if tab["tab_id"] == active_tab_id)
+        page_size = max(5, min(int(page_size or 20), 100))
+        page = max(1, int(page or 1))
+        search = str(q or "").strip()
+        where = ["i.tab_id = ?"]
+        params: list[Any] = [active_tab_id]
+        if search:
+            where.append("(i.symbol LIKE ? OR COALESCE(m.name, i.name, '') LIKE ?)")
+            like = f"%{search}%"
+            params.extend([like, like])
+        where_sql = " AND ".join(where)
+        total = conn.execute(
+            f"""
+            SELECT COUNT(*) AS count
+            FROM watchlist_items i
+            LEFT JOIN market_quotes m ON m.symbol = i.symbol
+            WHERE {where_sql}
+            """,
+            tuple(params),
+        ).fetchone()["count"]
+        page_count = max(1, (int(total) + page_size - 1) // page_size)
+        page = min(page, page_count)
+        offset = (page - 1) * page_size
+        item_params = params + [page_size, offset]
+        stocks = [
+            dict(row)
+            for row in conn.execute(
+                f"""
+                SELECT
+                    i.item_id, i.tab_id, i.symbol AS code,
+                    COALESCE(m.name, i.name) AS name,
+                    m.price, m.pct_change, m.pe_ttm, m.pb, m.ma20, m.ma60,
+                    m.change_20d_pct, m.trade_date, m.updated_at,
+                    CASE WHEN m.symbol IS NULL THEN 'MISSING' ELSE 'OK' END AS status
+                FROM watchlist_items i
+                LEFT JOIN market_quotes m ON m.symbol = i.symbol
+                WHERE {where_sql}
+                ORDER BY i.symbol
+                LIMIT ? OFFSET ?
+                """,
+                tuple(item_params),
+            ).fetchall()
+        ]
+        for stock in stocks:
+            stock["pct_class"] = market_change_class(stock.get("pct_change"))
+            stock["change_20d_class"] = market_change_class(stock.get("change_20d_pct"))
+    return {
+        "tabs": tabs,
+        "active_tab": active_tab,
+        "stocks": stocks,
+        "filters": {"tab": active_tab_id, "q": search, "page": page, "page_size": page_size},
+        "pagination": {
+            "total": int(total),
+            "page": page,
+            "page_size": page_size,
+            "page_count": page_count,
+            "prev_page": page - 1 if page > 1 else None,
+            "next_page": page + 1 if page < page_count else None,
+        },
+    }
+
+
+def market_change_class(value: Any) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return ""
+    if number > 0:
+        return "market-up"
+    if number < 0:
+        return "market-down"
+    return "market-flat"
+
+
+def empty_watchlist_page(tab_id: str, q: str, page: int, page_size: int) -> dict[str, Any]:
+    return {
+        "tabs": [],
+        "active_tab": {"tab_id": tab_id, "name": "自选股", "count": 0},
+        "stocks": [],
+        "filters": {"tab": tab_id, "q": q, "page": page, "page_size": page_size},
+        "pagination": {"total": 0, "page": 1, "page_size": page_size, "page_count": 1, "prev_page": None, "next_page": None},
+    }
+
+
+def stock_detail(settings: DashboardSettings, code: str) -> dict[str, Any] | None:
+    item = one(
+        settings,
+        """
+        SELECT symbol AS code, name, exchange, asset_type, trade_date, quote_time,
+               price, pct_change, pe_ttm, pb, market_cap_yuan, ma20, ma60,
+               change_20d_pct, source, source_path, updated_at, payload_json
+        FROM market_quotes
+        WHERE symbol = ?
+        """,
+        (code,),
+    )
+    if item is None:
+        return None
+    payload = parse_json(item.get("payload_json"), {})
+    quote = payload.get("quote") or {}
+    meta = payload.get("meta") or {}
+    return {
+        "code": item.get("code"),
+        "path": item.get("source_path"),
+        "name": item.get("name"),
+        "trade_date": item.get("trade_date"),
+        "generated_at": item.get("updated_at") or meta.get("generated_at"),
+        "quote": quote or item,
+        "technical": payload.get("technical") or {},
+        "valuation": payload.get("valuation") or {},
+        "financial": payload.get("financial") or {},
+        "data_gaps": payload.get("data_gaps_for_engine") or [],
+        "raw_json": json.dumps(payload or item, ensure_ascii=False, indent=2),
+    }
+
+
+def watchlist_screen_runs(settings: DashboardSettings, limit: int = 50) -> list[dict[str, Any]]:
+    items = safe_rows(
+        settings,
+        "watchlist_screen_runs",
+        """
+        SELECT run_id, tab_id, tab_name, screen_type, trade_date, total_count,
+               candidate_count, watch_count, risk_count, data_gap_count, created_at
+        FROM watchlist_screen_runs
+        ORDER BY COALESCE(created_at, '') DESC
+        LIMIT ?
+        """,
+        (limit,),
+    )
+    for item in items:
+        item["summary"] = (
+            f"候选 {item.get('candidate_count') or 0} / "
+            f"观察 {item.get('watch_count') or 0} / "
+            f"风险 {item.get('risk_count') or 0} / "
+            f"缺数据 {item.get('data_gap_count') or 0}"
+        )
+    return items
+
+
+def watchlist_screen_detail(settings: DashboardSettings, run_id: str) -> dict[str, Any] | None:
+    run = one(
+        settings,
+        """
+        SELECT run_id, tab_id, tab_name, screen_type, trade_date, total_count,
+               candidate_count, watch_count, risk_count, data_gap_count, created_at, params_json
+        FROM watchlist_screen_runs
+        WHERE run_id = ?
+        """,
+        (run_id,),
+    )
+    if run is None:
+        return None
+    results = safe_rows(
+        settings,
+        "watchlist_screen_results",
+        """
+        SELECT result_id, run_id, symbol, name, category, score, price, pct_change,
+               pe_ttm, pb, ma20, ma60, change_20d_pct, trade_date, is_position,
+               matched_rules_json, warnings_json, summary, created_at,
+               review_status, review_action, reviewed_at, review_note
+        FROM watchlist_screen_results
+        WHERE run_id = ?
+        ORDER BY
+            CASE category
+                WHEN 'CANDIDATE' THEN 1
+                WHEN 'WATCH' THEN 2
+                WHEN 'NEUTRAL' THEN 3
+                WHEN 'RISK' THEN 4
+                WHEN 'DATA_GAP' THEN 5
+                ELSE 9
+            END,
+            score DESC,
+            symbol
+        """,
+        (run_id,),
+    )
+    for item in results:
+        item["review_status"] = item.get("review_status") or "UNREVIEWED"
+        item["matched_rules"] = parse_json(item.get("matched_rules_json"), [])
+        item["warnings"] = parse_json(item.get("warnings_json"), [])
+        review_note = parse_json(item.get("review_note"), {})
+        item["decision_id"] = review_note.get("decision_id") if isinstance(review_note, dict) else None
+        item["pct_class"] = market_change_class(item.get("pct_change"))
+        item["change_20d_class"] = market_change_class(item.get("change_20d_pct"))
+    return {"run": run, "results": results}
+
+
+def post_market_diagnosis_page(settings: DashboardSettings, limit: int = 100) -> dict[str, Any]:
+    conn = connect_if_ready(settings)
+    if conn is None:
+        return {"tabs": [], "runs": [], "items": []}
+    with conn:
+        tabs = (
+            [
+                dict(row)
+                for row in conn.execute(
+                    """
+                    SELECT tab_id, name, tab_type
+                    FROM watchlist_tabs
+                    WHERE is_active = 1
+                    ORDER BY sort_order, created_at
+                    """
+                ).fetchall()
+            ]
+            if table_exists(conn, "watchlist_tabs")
+            else []
+        )
+    runs = safe_rows(
+        settings,
+        "post_market_diagnosis_runs",
+        """
+        SELECT run_id, trade_date, next_trade_date, total_count, success_count,
+               failed_count, position_risk_count, buy_candidate_count, watch_count,
+               data_gap_count, created_at
+        FROM post_market_diagnosis_runs
+        ORDER BY COALESCE(created_at, '') DESC
+        LIMIT 30
+        """,
+    )
+    latest_data_prep = safe_rows(
+        settings,
+        "post_market_data_prep_runs",
+        """
+        SELECT run_id, trade_date, success_count, failed_count, status, finished_at
+        FROM post_market_data_prep_runs
+        ORDER BY COALESCE(started_at, '') DESC
+        LIMIT 1
+        """,
+    )
+    latest_run_id = runs[0]["run_id"] if runs else None
+    items = (
+        safe_rows(
+            settings,
+            "next_day_watch_items",
+            """
+            SELECT item_id, run_id, symbol, name, source_type, category, priority,
+                   reason, current_price, reference_price, trade_date, next_trade_date,
+                   review_status, review_action, reviewed_at, decision_id, created_at
+            FROM next_day_watch_items
+            WHERE run_id = ?
+            ORDER BY CASE priority WHEN 'HIGH' THEN 1 WHEN 'MEDIUM' THEN 2 WHEN 'LOW' THEN 3 ELSE 9 END,
+                     CASE category WHEN 'POSITION_RISK' THEN 1 WHEN 'BUY_CANDIDATE' THEN 2 WHEN 'WATCH_TOMORROW' THEN 3 WHEN 'DATA_GAP' THEN 4 ELSE 9 END,
+                     symbol
+            LIMIT ?
+            """,
+            (latest_run_id, limit),
+        )
+        if latest_run_id
+        else []
+    )
+    for item in items:
+        item["price_class"] = market_change_class(None)
+    return {
+        "tabs": tabs,
+        "runs": runs,
+        "items": items,
+        "latest_run_id": latest_run_id,
+        "latest_data_prep": latest_data_prep[0] if latest_data_prep else None,
+    }
+
+
+def post_market_data_prep_page(settings: DashboardSettings, limit: int = 80) -> dict[str, Any]:
+    conn = connect_if_ready(settings)
+    if conn is None:
+        return {"tabs": [], "runs": [], "items": [], "latest_run_id": None}
+    with conn:
+        tabs = (
+            [
+                dict(row)
+                for row in conn.execute(
+                    """
+                    SELECT tab_id, name, tab_type
+                    FROM watchlist_tabs
+                    WHERE is_active = 1
+                    ORDER BY sort_order, created_at
+                    """
+                ).fetchall()
+            ]
+            if table_exists(conn, "watchlist_tabs")
+            else []
+        )
+    runs = safe_rows(
+        settings,
+        "post_market_data_prep_runs",
+        """
+        SELECT run_id, trade_date, total_count, success_count, failed_count,
+               position_sync_count, account_sync_count, started_at, finished_at,
+               status, error_message
+        FROM post_market_data_prep_runs
+        ORDER BY COALESCE(started_at, '') DESC
+        LIMIT 30
+        """,
+    )
+    latest_run_id = runs[0]["run_id"] if runs else None
+    items = (
+        safe_rows(
+            settings,
+            "post_market_data_prep_items",
+            """
+            SELECT item_id, run_id, symbol, name, source_type, status,
+                   trade_date, error_message, created_at
+            FROM post_market_data_prep_items
+            WHERE run_id=?
+            ORDER BY CASE status WHEN 'FAILED' THEN 1 WHEN 'OK' THEN 2 ELSE 9 END,
+                     symbol
+            LIMIT ?
+            """,
+            (latest_run_id, limit),
+        )
+        if latest_run_id
+        else []
+    )
+    return {"tabs": tabs, "runs": runs, "items": items, "latest_run_id": latest_run_id}
+
+
+def read_code_list(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    codes: list[str] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        code = line.strip()
+        if code and code not in codes:
+            codes.append(code)
+    return codes
 
 
 def report_detail(settings: DashboardSettings, report_id: str) -> dict[str, Any] | None:

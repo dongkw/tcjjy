@@ -11,7 +11,7 @@
       <tbody>
         {% for item in risk_checks %}
         <tr>
-          <td>{{ item.created_at | dash }}</td><td>{{ item.account_id | dash }}</td><td>{{ item.symbol | dash }}</td>
+          <td>{{ item.created_at | datetime }}</td><td>{{ item.account_id | dash }}</td><td>{{ item.symbol | dash }}</td>
           <td>{{ item.original_action | dash }}</td><td>{{ item.allowed_action | dash }}</td>
           <td><span class="status-pill {{ item.risk_status | status_class }}">{{ item.risk_status | dash }}</span></td>
           <td>{{ item.risk_level | dash }}</td><td>{{ item.max_cash_amount | money }}</td><td>{{ item.max_quantity | dash }}</td>

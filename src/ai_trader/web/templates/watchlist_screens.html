@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}盘前筛选记录 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>盘前筛选记录</h1>
+    <p>查看自选股规则筛选的历史结果。</p>
+  </div>
+  <a class="button-link secondary" href="{{ url_for('watchlists_page') }}">返回自选股</a>
+</section>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>时间</th><th>Tab</th><th>交易日</th><th>数量</th><th>统计</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td>{{ run.created_at | datetime }}</td>
+          <td>{{ run.tab_name | dash }}</td>
+          <td>{{ run.trade_date | dash }}</td>
+          <td>{{ run.total_count | dash }}</td>
+          <td>{{ run.summary | dash }}</td>
+          <td><a class="button-link secondary small" href="{{ url_for('watchlist_screen_detail_page', run_id=run.run_id) }}">查看</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">暂无筛选记录。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

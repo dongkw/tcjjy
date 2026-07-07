@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 
@@ -29,15 +30,54 @@ def dash(value: Any) -> str:
     return str(value)
 
 
+def datetime_text(value: Any) -> str:
+    if value is None or value == "":
+        return "-"
+    text = str(value)
+    if "T" not in text:
+        return text
+    try:
+        return datetime.fromisoformat(text).strftime("%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return text
+
+
 def status_class(value: Any) -> str:
     text = str(value or "").upper()
-    if text in {"ERROR", "FAILED", "REJECTED", "BLOCKED", "DATA_BLOCKED"}:
+    if text in {"ERROR", "FAILED", "REJECTED", "BLOCKED", "DATA_BLOCKED", "RISK", "IGNORE", "HIGH", "SELL_RISK"}:
         return "status-danger"
-    if text in {"WARNING", "WARN", "STALE", "MISSING", "NO_SELL_T_PLUS"}:
+    if text in {"WARNING", "WARN", "STALE", "MISSING", "NO_SELL_T_PLUS", "DATA_GAP", "DEFER", "MEDIUM", "POSITION_RISK", "TRADE_LIMIT", "NEED_DECISION", "PARTIAL"}:
         return "status-warning"
-    if text in {"OK", "SUCCESS", "READY", "READY_FOR_CONFIRM", "FILLED", "ACTIVE"}:
+    if text in {
+        "OK",
+        "SUCCESS",
+        "READY",
+        "READY_FOR_CONFIRM",
+        "FILLED",
+        "ACTIVE",
+        "CANDIDATE",
+        "BUY_CANDIDATE",
+        "GENERATE_DECISION",
+        "DECISION_CREATED",
+        "LOW",
+        "OK",
+        "TAKE_PROFIT",
+    }:
         return "status-ok"
-    if text in {"RECORDED", "WAIT", "HOLD", "WATCH_SMALL"}:
+    if text in {
+        "RECORDED",
+        "WAIT",
+        "HOLD",
+        "WATCH_SMALL",
+        "WATCH",
+        "WATCH_TOMORROW",
+        "WATCH_INTRADAY",
+        "NEUTRAL",
+        "WATCH_TODAY",
+        "UNREVIEWED",
+        "VIEWED",
+        "DONE",
+    }:
         return "status-info"
     return "status-muted"
 

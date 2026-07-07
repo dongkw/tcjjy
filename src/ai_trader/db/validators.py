@@ -45,6 +45,11 @@ REQUIRED_TABLES = [
     "strategy_tuning_records",
     "reports",
     "ai_calls",
+    "watchlist_tabs",
+    "watchlist_items",
+    "market_quotes",
+    "watchlist_screen_runs",
+    "watchlist_screen_results",
 ]
 
 SUMMARY_TABLES = [
@@ -63,6 +68,11 @@ SUMMARY_TABLES = [
     "performance_metrics",
     "strategy_tuning_records",
     "reports",
+    "watchlist_tabs",
+    "watchlist_items",
+    "market_quotes",
+    "watchlist_screen_runs",
+    "watchlist_screen_results",
 ]
 
 PAYLOAD_TABLES = [
@@ -92,6 +102,7 @@ PAYLOAD_TABLES = [
     "replay_daily_records",
     "performance_metrics",
     "strategy_tuning_records",
+    "watchlist_items",
 ]
 
 

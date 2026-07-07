@@ -1,76 +1,50 @@
 {
   "meta": {
-    "generated_at": "2026-07-03T20:14:33",
-    "requested_period": "short",
+    "generated_at": "2026-07-07T20:14:33",
+    "requested_period": "middle",
     "source": "Tencent quote/kline plus Eastmoney finance/announcement/ownership APIs"
   },
   "quote": {
     "code": "002563",
     "name": "森马服饰",
     "market": "SZ",
-    "trade_date": "2026-07-03",
-    "price": 5.55,
-    "open": 5.38,
-    "high": 5.57,
-    "low": 5.36,
-    "previous_close": 5.35,
-    "change": 0.2,
-    "pct_change": 3.74,
-    "volume_lots": 203283.0,
-    "amount_yuan": 111420000.0,
-    "market_cap_yuan": 12249000000.0,
-    "pe_ttm": 15.11,
-    "pb": 1.32,
+    "trade_date": "2026-07-07",
+    "price": 5.65,
+    "open": 5.72,
+    "high": 5.77,
+    "low": 5.62,
+    "previous_close": 5.72,
+    "change": -0.07,
+    "pct_change": -1.22,
+    "volume_lots": 155645.0,
+    "amount_yuan": 88230000.0,
+    "market_cap_yuan": 12470000000.0,
+    "pe_ttm": 15.38,
+    "pb": 1.35,
     "dividend_yield_pct": null,
     "roe_pct_quote": null,
     "net_margin_pct_quote": null,
     "trading_status": null
   },
   "technical": {
-    "last_date": "2026-07-03",
-    "close": 5.55,
-    "day_pct_change": 3.74,
+    "last_date": "2026-07-07",
+    "close": 5.65,
+    "day_pct_change": -1.22,
     "amount_yuan": 0.0,
-    "ma20": 5.32,
-    "ma60": 5.45,
-    "ma120": 5.38,
+    "ma20": 5.35,
+    "ma60": 5.47,
+    "ma120": 5.39,
     "ma20_slope_up": true,
     "ma60_slope_up": true,
     "above_ma20": true,
     "above_ma60": true,
-    "change_5d_pct": 9.68,
-    "change_20d_pct": 2.59,
-    "change_60d_pct": 7.14,
-    "high_20d": 5.57,
+    "change_5d_pct": 12.1,
+    "change_20d_pct": 5.81,
+    "change_60d_pct": 7.41,
+    "high_20d": 5.77,
     "low_20d": 4.92,
-    "atr14_pct": 3.04,
+    "atr14_pct": 3.14,
     "recent_10d": [
-      {
-        "date": "2026-06-22",
-        "open": 5.21,
-        "close": 5.25,
-        "high": 5.27,
-        "low": 5.11,
-        "volume": 171704.0,
-        "amount": 0.0,
-        "amplitude_pct": 3.05,
-        "pct_change": 0.19,
-        "change": 0.01,
-        "turnover_pct": 0.0
-      },
-      {
-        "date": "2026-06-23",
-        "open": 5.22,
-        "close": 5.34,
-        "high": 5.37,
-        "low": 5.22,
-        "volume": 186326.0,
-        "amount": 0.0,
-        "amplitude_pct": 2.86,
-        "pct_change": 1.71,
-        "change": 0.09,
-        "turnover_pct": 0.0
-      },
       {
         "date": "2026-06-24",
         "open": 5.34,
@@ -173,6 +147,32 @@
         "amplitude_pct": 3.93,
         "pct_change": 3.74,
         "change": 0.2,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-06",
+        "open": 5.55,
+        "close": 5.72,
+        "high": 5.75,
+        "low": 5.48,
+        "volume": 253464.0,
+        "amount": 0.0,
+        "amplitude_pct": 4.86,
+        "pct_change": 3.06,
+        "change": 0.17,
+        "turnover_pct": 0.0
+      },
+      {
+        "date": "2026-07-07",
+        "open": 5.72,
+        "close": 5.65,
+        "high": 5.77,
+        "low": 5.62,
+        "volume": 155645.0,
+        "amount": 0.0,
+        "amplitude_pct": 2.62,
+        "pct_change": -1.22,
+        "change": -0.07,
         "turnover_pct": 0.0
       }
     ]
@@ -442,12 +442,12 @@
   },
   "valuation": {
     "method": "derived_from_qfq_daily_close_and_reported_eps_roe",
-    "pe_ttm": 15.11,
-    "pb": 1.32,
-    "pe_5y_median": 14.11,
-    "pe_5y_percentile": 64.59,
+    "pe_ttm": 15.38,
+    "pb": 1.35,
+    "pe_5y_median": 14.14,
+    "pe_5y_percentile": 68.02,
     "pb_5y_median": 1.23,
-    "pb_5y_percentile": 75.98,
+    "pb_5y_percentile": 85.34,
     "sample_days_pe": 641,
     "sample_days_pb": 641,
     "latest_effective_report": {
@@ -523,18 +523,30 @@
     },
     "margin_trading": {
       "latest": {
-        "date": "2026-07-02",
-        "financing_balance_yuan": 133761607.0,
-        "securities_lending_balance_yuan": 1818465.0,
-        "margin_balance_yuan": 135580072.0,
-        "financing_buy_yuan": 3753605.0,
-        "financing_repay_yuan": 4946793.0,
-        "financing_net_buy_yuan": -1193188.0,
-        "financing_balance_to_market_cap_pct": 1.13,
-        "financing_net_buy_5d_yuan": -6239084.0,
-        "financing_net_buy_10d_yuan": -3881326.0
+        "date": "2026-07-06",
+        "financing_balance_yuan": 132035558.0,
+        "securities_lending_balance_yuan": 2178748.0,
+        "margin_balance_yuan": 134214306.0,
+        "financing_buy_yuan": 7721392.0,
+        "financing_repay_yuan": 8141719.0,
+        "financing_net_buy_yuan": -420327.0,
+        "financing_balance_to_market_cap_pct": 1.05,
+        "financing_net_buy_5d_yuan": -6087334.0,
+        "financing_net_buy_10d_yuan": -3092450.0
       },
       "recent": [
+        {
+          "date": "2026-07-06",
+          "financing_balance_yuan": 132035558.0,
+          "financing_net_buy_yuan": -420327.0,
+          "financing_balance_to_market_cap_pct": 1.05
+        },
+        {
+          "date": "2026-07-03",
+          "financing_balance_yuan": 132455885.0,
+          "financing_net_buy_yuan": -1305722.0,
+          "financing_balance_to_market_cap_pct": 1.08
+        },
         {
           "date": "2026-07-02",
           "financing_balance_yuan": 133761607.0,
@@ -582,18 +594,6 @@
           "financing_balance_yuan": 136427537.0,
           "financing_net_buy_yuan": 1299529.0,
           "financing_balance_to_market_cap_pct": 1.16
-        },
-        {
-          "date": "2026-06-22",
-          "financing_balance_yuan": 135128008.0,
-          "financing_net_buy_yuan": -1158383.0,
-          "financing_balance_to_market_cap_pct": 1.17
-        },
-        {
-          "date": "2026-06-18",
-          "financing_balance_yuan": 136286391.0,
-          "financing_net_buy_yuan": -1356542.0,
-          "financing_balance_to_market_cap_pct": 1.18
         }
       ]
     },

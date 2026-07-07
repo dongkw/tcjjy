@@ -1,0 +1,2 @@
+account_id,account_name,account_type,total_assets,market_value,available_cash,withdrawable_cash,position_pct,holding_pnl,today_pnl,today_pnl_pct,currency,source,source_time,need_confirm
+real_shadow,真实影子账户,PAPER_SHADOW,36260.80,21114.00,15146.80,10554.15,58.22,1160.53,-85.35,-0.23,CNY,broker_screenshot,2026-07-06 07:33,true

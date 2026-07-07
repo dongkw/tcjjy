@@ -58,7 +58,7 @@
       <thead><tr><th>时间</th><th>类型</th><th>错误</th><th>说明</th></tr></thead>
       <tbody>
         {% for item in sync_errors %}
-        <tr><td>{{ item.created_at | dash }}</td><td>{{ item.sync_type | dash }}</td><td>{{ item.error_type | dash }}</td><td>{{ item.error_message | short_text(90) }}</td></tr>
+        <tr><td>{{ item.created_at | datetime }}</td><td>{{ item.sync_type | dash }}</td><td>{{ item.error_type | dash }}</td><td>{{ item.error_message | short_text(90) }}</td></tr>
         {% else %}
         <tr><td colspan="4" class="muted">暂无同步错误。</td></tr>
         {% endfor %}
@@ -89,7 +89,7 @@
         <thead><tr><th>开始</th><th>批次</th><th>状态</th><th>记录</th><th>错误</th></tr></thead>
         <tbody>
           {% for item in batches %}
-          <tr><td>{{ item.started_at | dash }}</td><td>{{ item.batch_id | short_text(28) }}</td><td><span class="status-pill {{ item.status | status_class }}">{{ item.status | dash }}</span></td><td>{{ item.record_count | dash }}</td><td>{{ item.error_message | short_text(60) }}</td></tr>
+          <tr><td>{{ item.started_at | datetime }}</td><td>{{ item.batch_id | short_text(28) }}</td><td><span class="status-pill {{ item.status | status_class }}">{{ item.status | dash }}</span></td><td>{{ item.record_count | dash }}</td><td>{{ item.error_message | short_text(60) }}</td></tr>
           {% else %}
           <tr><td colspan="5" class="muted">暂无导入批次。</td></tr>
           {% endfor %}

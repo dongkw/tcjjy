@@ -270,7 +270,9 @@ def _import_portfolio(conn: sqlite3.Connection, root: Path, stats: Counter[str])
         if not isinstance(account_positions, dict):
             continue
         for symbol, position in account_positions.items():
-            _insert(conn, "positions", _position_record(account_id, symbol, position), ["account_id", "symbol"], stats)
+            record = _position_record(account_id, symbol, position)
+            _preserve_manual_position_plan(conn, record)
+            _insert(conn, "positions", record, ["account_id", "symbol"], stats)
 
     _import_jsonl(conn, root, portfolio / "position_locks.jsonl", "position_locks", "lock_id", ["lock_id"], stats)
     _import_jsonl(conn, root, portfolio / "cash_ledger.jsonl", "cash_ledger", "cash_ledger_id", ["cash_ledger_id"], stats)
@@ -300,11 +302,29 @@ def _position_record(account_id: str, symbol: str, position: dict[str, Any]) -> 
         "buy_logic": position.get("buy_logic"),
         "invalidation_point": position.get("invalidation_point"),
         "stop_loss_price": position.get("stop_loss_price"),
+        "target_price": position.get("target_price"),
+        "position_note": position.get("position_note"),
         "planned_position_pct": position.get("planned_position_pct"),
         "position_status": position.get("position_status"),
         "updated_at": position.get("updated_at"),
         "payload_json": json_text(position),
     }
+
+
+def _preserve_manual_position_plan(conn: sqlite3.Connection, record: dict[str, Any]) -> None:
+    existing = conn.execute(
+        """
+        SELECT buy_logic, invalidation_point, stop_loss_price, target_price, planned_position_pct, position_note
+        FROM positions
+        WHERE account_id = ? AND symbol = ?
+        """,
+        (record["account_id"], record["symbol"]),
+    ).fetchone()
+    if existing is None:
+        return
+    for key in ["buy_logic", "invalidation_point", "stop_loss_price", "target_price", "planned_position_pct", "position_note"]:
+        if existing[key] not in (None, "") and record.get(key) in (None, ""):
+            record[key] = existing[key]
 
 
 def _import_jsonl(

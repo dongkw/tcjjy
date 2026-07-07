@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block title %}账户 - 天才交易员{% endblock %}
 {% block content %}
-<section class="page-header"><div><h1>账户</h1><p>查看本金、现金、持仓市值和账户仓位。</p></div></section>
+<section class="page-header">
+  <div><h1>账户</h1><p>查看本金、现金、持仓市值和账户仓位。</p></div>
+  <form method="post" action="{{ url_for('action_refresh_position_market') }}">
+    <input type="hidden" name="return_to" value="/accounts">
+    <button type="submit">刷新持仓行情</button>
+  </form>
+</section>
 <section class="panel">
   <div class="table-wrap">
     <table>
@@ -14,7 +20,7 @@
           <td>{{ item.account_id }}</td><td>{{ item.account_type | dash }}</td><td>{{ item.initial_cash | money }}</td>
           <td>{{ item.available_cash | money }}</td><td>{{ item.frozen_cash | money }}</td><td>{{ item.market_value | money }}</td>
           <td>{{ item.total_assets | money }}</td><td>{{ item.cash_pct | pct }}</td><td>{{ item.equity_position_pct | pct }}</td>
-          <td>{{ item.trade_date | dash }}</td><td>{{ item.updated_at | dash }}</td>
+          <td>{{ item.trade_date | dash }}</td><td>{{ item.updated_at | datetime }}</td>
         </tr>
         {% else %}
         <tr><td colspan="11" class="muted">暂无账户数据。</td></tr>

@@ -123,6 +123,24 @@ python .\paper_trading.py apply .\data\decision_results\decision_result_002563_b
 python .\paper_trading.py snapshot --account paper_default
 ```
 
+导入真实账户影子持仓：
+
+```powershell
+python .\import_real_account.py --trade-date 2026-07-06
+```
+
+初始化自选股数据库：
+
+```powershell
+python .\database.py init
+```
+
+启动本地 Web 工作台后，在“自选股”页面使用 tab、搜索、分页、手动加股和勾选刷新：
+
+```powershell
+python .\web_dashboard.py --host 127.0.0.1 --port 8000
+```
+
 生成第三轮组合计划：
 
 ```powershell
@@ -200,6 +218,8 @@ http://127.0.0.1:8000
 - 第一轮决策生成后自动把 `strategy_snapshot`、`decision_result` 和报告索引同步到 SQLite。
 - 模拟盘账户、持仓、现金流水、信号、订单、成交和快照写入后自动同步到 SQLite；JSON/JSONL 仍是事实源。
 - 提供本地 Web 工作台，读取 SQLite 展示总览、账户、持仓、决策、报告、回放和数据健康状态。
+- 持仓详情页可维护买入逻辑、证伪点、止损价、目标价、计划仓位和备注，并写入人工维护审计记录。
+- 工作流页可手动生成盘前持仓检查，提示缺买入逻辑、缺退出规则、T+1 锁定、接近止损、浮亏和仓位过高等问题。
 
 ## 阶段定位
 
@@ -254,5 +274,8 @@ http://127.0.0.1:8000
 - [07 risk_control 风控分层设计](docs/07_risk_control_风控分层设计_v0.1.md)
 - [08 database_schema 数据库设计](docs/08_database_schema_数据库设计_v0.1.md)
 - [09 workflow 盘前盘中盘后设计](docs/09_workflow_盘前盘中盘后设计_v0.1.md)
+- [持仓人工维护规则](docs/持仓人工维护规则_v0.1.md)
+- [盘前持仓检查开发落地说明](docs/盘前持仓检查_开发落地说明_v0.1.md)
+- [盘后批量诊股与明日关注池设计](docs/盘后批量诊股_明日关注池设计_v0.1.md)
 - [股票投资决策引擎](docs/股票投资决策引擎（AI执行版%20v2.0）.md)
 - [数据字段与规则映射](docs/股票决策数据底稿_字段说明与规则映射.md)

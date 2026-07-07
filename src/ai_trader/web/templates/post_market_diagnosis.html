@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}盘后诊股 - 天才交易员{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div>
+    <h1>盘后诊股</h1>
+    <p>读取已落库的收盘数据，批量诊断持仓和自选股，生成明日重点关注池。</p>
+  </div>
+  <div class="action-row">
+    <a class="button-link secondary" href="{{ url_for('post_market_data_prep_page') }}">盘后数据</a>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>最近盘后数据</h2></div>
+  <div class="table-wrap">
+    <table class="small-table">
+      <tbody>
+        {% if latest_data_prep %}
+        <tr><th>批次</th><td>{{ latest_data_prep.run_id | dash }}</td><th>交易日</th><td>{{ latest_data_prep.trade_date | dash }}</td></tr>
+        <tr><th>状态</th><td><span class="status-pill {{ latest_data_prep.status | status_class }}">{{ latest_data_prep.status | dash }}</span></td><th>完成时间</th><td>{{ latest_data_prep.finished_at | datetime }}</td></tr>
+        <tr><th>成功</th><td>{{ latest_data_prep.success_count | dash }}</td><th>失败</th><td>{{ latest_data_prep.failed_count | dash }}</td></tr>
+        {% else %}
+        <tr><td class="muted">暂无盘后数据准备记录。建议先执行盘后数据准备，再运行盘后诊股。</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>运行盘后批量诊股</h2></div>
+  <form class="post-market-form" method="post" action="{{ url_for('action_post_market_diagnosis_run') }}">
+    <div class="form-field">
+      <span class="field-label">范围</span>
+      <label class="checkbox-line"><input type="checkbox" name="include_positions" value="1" checked> 包含当前持仓</label>
+    </div>
+    <div class="form-field wide">
+      <span class="field-label">选择自选股 tab</span>
+      <div class="checkbox-group">
+        {% for tab in tabs %}
+        <label class="checkbox-line"><input type="checkbox" name="tab_ids" value="{{ tab.tab_id }}" {{ 'checked' if tab.tab_id in ['all', 'decisions'] else '' }}> {{ tab.name }}</label>
+        {% else %}
+        <span class="muted">暂无自选股 tab。</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit">运行盘后诊股</button>
+    </div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h2>明日关注池</h2>
+    {% if latest_run_id %}<span class="muted">当前批次：{{ latest_run_id }}</span>{% endif %}
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>优先级</th><th>分类</th><th>代码</th><th>名称</th><th>来源</th><th>现价</th><th>参考价</th><th>交易日</th><th>状态</th><th>理由</th><th class="action-col">操作</th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td><span class="status-pill {{ item.priority | status_class }}">{{ item.priority | dash }}</span></td>
+          <td><span class="status-pill {{ item.category | status_class }}">{{ item.category | dash }}</span></td>
+          <td>{{ item.symbol | dash }}</td>
+          <td>{{ item.name | dash }}</td>
+          <td>{{ item.source_type | dash }}</td>
+          <td>{{ item.current_price | money }}</td>
+          <td>{{ item.reference_price | money }}</td>
+          <td>{{ item.trade_date | dash }}</td>
+          <td><span class="status-pill {{ item.review_status | status_class }}">{{ item.review_status | dash }}</span></td>
+          <td class="wrap-cell">{{ item.reason | dash }}</td>
+          <td class="action-col">
+            <div class="button-stack compact">
+              {% if item.decision_id %}
+              <a class="button-link secondary small" href="{{ url_for('decision_detail_page', decision_id=item.decision_id) }}">查看决策</a>
+              {% endif %}
+              <a class="button-link secondary small" href="{{ url_for('watchlist_detail_page', code=item.symbol) }}">详情</a>
+              <form method="post" action="{{ url_for('action_next_day_watch_review') }}">
+                <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                <input type="hidden" name="status" value="WATCH_INTRADAY">
+                <button class="secondary small" type="submit">盘中盯</button>
+              </form>
+              <form method="post" action="{{ url_for('action_next_day_watch_decision') }}">
+                <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                <button class="small" type="submit">生成决策</button>
+              </form>
+              <form method="post" action="{{ url_for('action_next_day_watch_review') }}">
+                <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                <input type="hidden" name="status" value="DONE">
+                <button class="secondary small" type="submit">已处理</button>
+              </form>
+              <form method="post" action="{{ url_for('action_next_day_watch_review') }}">
+                <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                <input type="hidden" name="status" value="IGNORE">
+                <button class="secondary small" type="submit">忽略</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="11" class="muted">暂无明日关注项。先运行盘后诊股。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>运行记录</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>时间</th><th>交易日</th><th>总数</th><th>可诊断</th><th>缺数据</th><th>持仓风险</th><th>买入候选</th><th>观察</th><th>缺数据项</th></tr></thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td>{{ run.created_at | datetime }}</td><td>{{ run.trade_date | dash }}</td><td>{{ run.total_count | dash }}</td>
+          <td>{{ run.success_count | dash }}</td><td>{{ run.failed_count | dash }}</td><td>{{ run.position_risk_count | dash }}</td>
+          <td>{{ run.buy_candidate_count | dash }}</td><td>{{ run.watch_count | dash }}</td><td>{{ run.data_gap_count | dash }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="muted">暂无运行记录。</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
