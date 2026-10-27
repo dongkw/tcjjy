@@ -1,0 +1,13 @@
+{
+  "name": "@dongkw/dsh-trader-v2",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Native dsh tools for the local V2 research and memory API",
+  "exports": "./src/index.mjs",
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": "0.1.5-alpha.1",
+    "@deepseek-ai/schemastery": "3.18.2"
+  }
+}

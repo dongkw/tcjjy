@@ -1,0 +1,7 @@
+/.venv/
+/.runtime/
+/*.egg-info/
+/src/*.egg-info/
+/build/
+/dist/
+/dsh-plugin/node_modules/
